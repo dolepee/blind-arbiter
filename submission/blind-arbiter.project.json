@@ -42,7 +42,7 @@
     "intentionNotes": "Continue from the live proof baseline: recover hosted confidential compute, wire real identity gating, and extend the sealed-settlement primitive beyond the hackathon demo."
   },
   "deployedURL": "https://blind-arbiter.vercel.app",
-  "videoURL": "https://cdn.jsdelivr.net/gh/dolepee/blind-arbiter@ee676b9f1cad878ff6508ce55edc0fc40373a1d3/submission/assets/blind-arbiter-demo.mp4",
-  "pictures": "https://cdn.jsdelivr.net/gh/dolepee/blind-arbiter@ee676b9f1cad878ff6508ce55edc0fc40373a1d3/submission/assets/blind-arbiter-screens.png",
-  "coverImageURL": "https://cdn.jsdelivr.net/gh/dolepee/blind-arbiter@ee676b9f1cad878ff6508ce55edc0fc40373a1d3/submission/assets/blind-arbiter-cover.png"
+  "videoURL": "https://cdn.jsdelivr.net/gh/dolepee/blind-arbiter@31dad48/submission/assets/blind-arbiter-demo.mp4",
+  "pictures": "https://cdn.jsdelivr.net/gh/dolepee/blind-arbiter@31dad48/submission/assets/blind-arbiter-screens.png",
+  "coverImageURL": "https://cdn.jsdelivr.net/gh/dolepee/blind-arbiter@31dad48/submission/assets/blind-arbiter-cover.png"
 }
