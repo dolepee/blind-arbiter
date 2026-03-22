@@ -5,6 +5,7 @@ const root = process.cwd();
 const submissionDir = path.join(root, "submission");
 const outputFile = path.join(submissionDir, "blind-arbiter.project.json");
 const registrationFile = "/home/qdee/keji-synthesis/runtime/synthesis-registration.json";
+const assetBaseUrl = "https://cdn.jsdelivr.net/gh/dolepee/blind-arbiter@main/submission/assets";
 
 const trackUUIDs = [
   "fdb76d08812b43f6a5f454744b66f590",
@@ -88,6 +89,9 @@ const payload = {
       "Continue from the live proof baseline: recover hosted confidential compute, wire real identity gating, and extend the sealed-settlement primitive beyond the hackathon demo.",
   },
   deployedURL: "https://blind-arbiter.vercel.app",
+  videoURL: `${assetBaseUrl}/blind-arbiter-demo.mp4`,
+  pictures: `${assetBaseUrl}/blind-arbiter-screens.png`,
+  coverImageURL: `${assetBaseUrl}/blind-arbiter-cover.png`,
 };
 
 if (process.env.SYNTHESIS_VIDEO_URL) {
