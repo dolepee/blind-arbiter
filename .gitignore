@@ -1,0 +1,8 @@
+.next
+node_modules
+runtime/
+npm-debug.log*
+.env
+.env.local
+.env.ecloud
+.env*.local

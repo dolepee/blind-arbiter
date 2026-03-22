@@ -1,0 +1,28 @@
+{
+  "name": "BlindArbiter",
+  "description": "Confidential milestone escrow arbiter for humans and agents. Evaluates sealed deliverables against a rubric, emits a redacted verdict, and drives release or dispute without leaking private work.",
+  "operator": {
+    "name": "BlindArbiter Operator",
+    "wallet": "0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2",
+    "identity": "self:operator-local"
+  },
+  "capabilities": [
+    "milestone creation",
+    "sealed deliverable submission",
+    "redacted verdict generation",
+    "receipt drafting",
+    "release and dispute orchestration"
+  ],
+  "integrations": {
+    "eigencompute": "local_http_worker_live_eigencloud_sepolia_provisioning_blocked",
+    "arkhai": "live_sepolia_nla_create_fulfill_arbitrate_collect",
+    "self": "local_stub",
+    "status": "anchored_receipts_live"
+  },
+  "categories": [
+    "confidential-agent",
+    "escrow",
+    "agent-governance",
+    "onchain-settlement"
+  ]
+}
