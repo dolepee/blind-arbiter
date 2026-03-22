@@ -121,6 +121,37 @@ button {
   line-height: 1.65;
 }
 
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 12px 18px;
+  border: 1px solid transparent;
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform 120ms ease, opacity 120ms ease, background 120ms ease;
+}
+
+.ctaButton:hover {
+  transform: translateY(-1px);
+}
+
+.ctaButtonSecondary {
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink);
+}
+
 .heroCard,
 .panel,
 .caseCard {
@@ -271,6 +302,25 @@ button {
   line-height: 1.55;
 }
 
+.mechanismNote {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.mechanismNote strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.88rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--local);
+}
+
+.mechanismNote p {
+  margin: 0;
+}
+
 .grid {
   display: grid;
   grid-template-columns: minmax(300px, 420px) minmax(0, 1fr);
@@ -283,6 +333,83 @@ button {
 
 .proofPanel {
   margin-bottom: 18px;
+}
+
+.flowPanel {
+  margin-bottom: 18px;
+}
+
+.flowTimeline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.flowNodeGroup {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  flex: 1 1 220px;
+  min-width: 220px;
+}
+
+.flowNode {
+  flex: 1 1 auto;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.68);
+  padding: 16px;
+}
+
+.flowNode h3 {
+  margin: 0 0 8px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.1rem;
+}
+
+.flowNode p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.flowIndex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-bottom: 12px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.flowArrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+}
+
+.flowArrow span {
+  position: relative;
+  display: block;
+  width: 26px;
+  height: 1px;
+  background: rgba(24, 23, 20, 0.45);
+}
+
+.flowArrow span::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  right: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid rgba(24, 23, 20, 0.45);
 }
 
 .proofGrid {
@@ -566,6 +693,25 @@ button:disabled {
   font-size: 0.9rem;
 }
 
+.receiptCluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.receiptLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 10px 14px;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
 .actionRow {
   display: flex;
   flex-wrap: wrap;
@@ -586,6 +732,32 @@ button:disabled {
 
 .logsPanel {
   margin-top: 18px;
+}
+
+.ctaPanel {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  margin-top: 18px;
+}
+
+.ctaPanel h2 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.7rem;
+}
+
+.ctaPanel p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 48rem;
+}
+
+.ctaRowBottom {
+  margin-top: 0;
+  flex-shrink: 0;
 }
 
 .logItem {
@@ -614,6 +786,11 @@ button:disabled {
   .heroStats {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
+
+  .ctaPanel {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 @media (max-width: 720px) {
@@ -637,5 +814,29 @@ button:disabled {
 
   .heroStats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .flowNodeGroup {
+    min-width: 100%;
+    flex-direction: column;
+  }
+
+  .flowArrow {
+    min-height: 22px;
+  }
+
+  .flowArrow span {
+    width: 1px;
+    height: 22px;
+  }
+
+  .flowArrow span::after {
+    top: auto;
+    bottom: 0;
+    right: -3px;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 6px solid rgba(24, 23, 20, 0.45);
+    border-bottom: none;
   }
 }

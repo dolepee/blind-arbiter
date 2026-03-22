@@ -75,6 +75,9 @@ function formatConfidence(value: number) {
   return `${Math.round(value * 100)}%`;
 }
 
+const docsUrl = "https://github.com/dolepee/blind-arbiter#readme";
+const deployUrl = "https://github.com/dolepee/blind-arbiter#run-locally";
+
 export function Workbench({ initialData }: WorkbenchProps) {
   const [data, setData] = useState(initialData);
   const [createForm, setCreateForm] = useState(initialCreateForm);
@@ -89,6 +92,8 @@ export function Workbench({ initialData }: WorkbenchProps) {
   const readOnlyMode = data.readOnlyMode === true;
   const proof = data.proof;
   const canonicalCase = data.cases.find((item) => item.status === "released") ?? data.cases[0];
+  const latestVerdictReceipt = proof?.anchoredReceipts.find((receipt) => receipt.action === "verdict_posted");
+  const latestDisputeReceipt = proof?.anchoredReceipts.find((receipt) => receipt.action === "disputed");
   const proofCount =
     (proof?.sepoliaEscrowSmoke?.transactions.length ?? 0) +
     (proof?.arkhaiLive?.transactions.length ?? 0) +
@@ -119,6 +124,60 @@ export function Workbench({ initialData }: WorkbenchProps) {
       tone: proof?.anchoredReceipts.length ? "live" : "muted",
     },
   ] as const;
+  const flowSteps = [
+    {
+      title: "Buyer funds escrow",
+      detail: "A milestone is funded against a natural-language acceptance rubric instead of an informal chat agreement.",
+    },
+    {
+      title: "Seller submits sealed evidence",
+      detail: "The seller uploads a private artifact bundle and narrative without exposing the deliverable to the counterparty.",
+    },
+    {
+      title: "Local agent evaluates rubric",
+      detail: "A self-hosted OpenClaw agent running in a secure Ubuntu operator environment scores the sealed submission deterministically.",
+    },
+    {
+      title: "Redacted verdict is posted",
+      detail: "BlindArbiter writes a public verdict summary, report hash, and receipt trail without leaking the sensitive artifact.",
+    },
+    {
+      title: "Onchain settlement",
+      detail: "The milestone is released or disputed onchain, while Status receipts anchor the public consequences.",
+    },
+  ] as const;
+  const canonicalDispute = {
+    amountUsd: 500,
+    settlementPath: "dispute",
+    buyer: "Security Council",
+    seller: "Private patch contributor",
+    milestoneSummary:
+      "Release only if the sealed patch bundle documents test execution evidence, rollback notes, and access-control coverage for the proposed fix.",
+    sealedSubmission:
+      "Seller submitted a sealed patch bundle for an authorization fix with a narrative summary, but omitted reproducible evidence for executed tests and did not document rollback verification.",
+    redactedVerdict:
+      "The private patch explains the code change, but the sealed submission failed to document test execution evidence and rollback verification. BlindArbiter therefore withheld release and triggered the dispute path.",
+    criteria: [
+      {
+        id: "patch_scope",
+        label: "Patch scope matches rubric",
+        result: "pass",
+        notes: "The sealed bundle appears to address the requested authorization boundary.",
+      },
+      {
+        id: "test_evidence",
+        label: "Test execution evidence",
+        result: "fail",
+        notes: "No reproducible proof of executed tests or attested command output was included in the sealed package.",
+      },
+      {
+        id: "rollback_plan",
+        label: "Rollback and recovery notes",
+        result: "fail",
+        notes: "The submission did not document how the private patch could be reverted safely if the milestone failed in production.",
+      },
+    ] as const,
+  };
 
   const refreshData = async () => {
     const response = await fetch("/api/cases");
@@ -139,6 +198,14 @@ export function Workbench({ initialData }: WorkbenchProps) {
             A buyer escrows funds against a natural-language rubric. A seller submits sealed evidence. BlindArbiter produces a redacted verdict,
             then either releases the escrow or opens a dispute with verifiable onchain receipts.
           </p>
+          <div className="ctaRow">
+            <a className="ctaButton" href={deployUrl} target="_blank" rel="noreferrer">
+              Deploy Your Escrow
+            </a>
+            <a className="ctaButton ctaButtonSecondary" href={docsUrl} target="_blank" rel="noreferrer">
+              View Documentation
+            </a>
+          </div>
           <div className="signalRow">
             {proofSignals.map((signal) => (
               <div key={signal.label} className={`signalPill signal-${signal.tone}`}>
@@ -175,7 +242,10 @@ export function Workbench({ initialData }: WorkbenchProps) {
             </div>
             <div>
               <strong>Mechanism</strong>
-              <p>BlindArbiter reviews sealed evidence, emits a redacted verdict, and drives release or dispute.</p>
+              <p>
+                BlindArbiter reviews sealed evidence inside a self-hosted Ubuntu operator runtime, emits a redacted verdict, and drives release or
+                dispute without leaking the underlying deliverable to external APIs.
+              </p>
             </div>
             <div>
               <strong>Proof</strong>
@@ -203,8 +273,17 @@ export function Workbench({ initialData }: WorkbenchProps) {
           <ol className="storyList">
             <li>Buyer funds a milestone escrow against a natural-language acceptance rubric.</li>
             <li>Seller submits sealed evidence for review without exposing the underlying work.</li>
+            <li>The blind review worker evaluates the rubric inside a secure Ubuntu environment using the OpenClaw framework.</li>
             <li>BlindArbiter issues a redacted verdict and settles release or dispute with onchain receipts.</li>
           </ol>
+          <div className="mechanismNote">
+            <strong>Privacy guarantee</strong>
+            <p>
+              The blind review worker is a self-hosted autonomous AI agent running in a secure Ubuntu operator environment via OpenClaw. Sealed
+              deliverables are evaluated deterministically inside that runtime, so sensitive artifacts never need to leave the operator environment or
+              be shipped to third-party APIs.
+            </p>
+          </div>
         </article>
         <article className="storyCard">
           <span className="proofEyebrow">What to verify</span>
@@ -217,92 +296,214 @@ export function Workbench({ initialData }: WorkbenchProps) {
         </article>
       </section>
 
+      <section id="settlement-flow" className="panel flowPanel">
+        <div className="panelHeader">
+          <div>
+            <h2>Settlement flow</h2>
+            <p>The buyer and seller see the same public consequences, while the sealed review stays inside the operator runtime.</p>
+          </div>
+        </div>
+        <div className="flowTimeline" aria-label="BlindArbiter settlement flow">
+          {flowSteps.map((step, index) => (
+            <div key={step.title} className="flowNodeGroup">
+              <article className="flowNode">
+                <span className="flowIndex">{String(index + 1).padStart(2, "0")}</span>
+                <h3>{step.title}</h3>
+                <p>{step.detail}</p>
+              </article>
+              {index < flowSteps.length - 1 ? (
+                <div className="flowArrow" aria-hidden="true">
+                  <span />
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      </section>
+
       <ProofPanel proof={proof} />
 
       {readOnlyMode && canonicalCase ? (
-        <section className="grid publicGrid">
-          <section className="panel publicCasePanel">
-            <div className="panelHeader">
-              <div>
-                <h2>Canonical settlement</h2>
-                <p>This is the reference BlindArbiter flow shown in the demo and backed by the live proof above.</p>
-              </div>
-              <div className={`statusBadge status-${canonicalCase.status}`}>{formatStatus(canonicalCase.status)}</div>
-            </div>
-
-            <div className="detailGrid">
-              <div>
-                <span className="label">Milestone value</span>
-                <p>${canonicalCase.amountUsd}</p>
-              </div>
-              <div>
-                <span className="label">Settlement path</span>
-                <p>{canonicalCase.review?.recommendedAction ?? "pending"}</p>
-              </div>
-              <div>
-                <span className="label">Buyer</span>
-                <p>{canonicalCase.buyer.displayName}</p>
-              </div>
-              <div>
-                <span className="label">Seller</span>
-                <p>{canonicalCase.seller?.displayName ?? "pending"}</p>
-              </div>
-            </div>
-
-            <div className="publicNarrative">
-              <div>
-                <span className="label">Milestone rubric</span>
-                <p>{canonicalCase.milestone.summary}</p>
-              </div>
-              <div>
-                <span className="label">Sealed submission</span>
-                <p>{canonicalCase.submission?.narrative}</p>
-              </div>
-              <div>
-                <span className="label">Redacted verdict</span>
-                <p>{canonicalCase.review?.redactedSummary}</p>
-              </div>
-            </div>
-
-            <div className="criterionList">
-              {(canonicalCase.review?.criteria ?? []).map((criterion) => (
-                <div key={criterion.id} className="criterionResult">
-                  <strong>{criterion.label}</strong>
-                  <span className={`miniVerdict miniVerdict-${criterion.result}`}>{criterion.result}</span>
-                  <p>{criterion.notes}</p>
+        <>
+          <section className="grid publicGrid">
+            <section className="panel publicCasePanel">
+              <div className="panelHeader">
+                <div>
+                  <h2>Canonical settlement</h2>
+                  <p>This is the reference BlindArbiter flow shown in the demo and backed by the live proof above.</p>
                 </div>
-              ))}
-            </div>
+                <div className={`statusBadge status-${canonicalCase.status}`}>{formatStatus(canonicalCase.status)}</div>
+              </div>
+
+              <div className="detailGrid">
+                <div>
+                  <span className="label">Milestone value</span>
+                  <p>${canonicalCase.amountUsd}</p>
+                </div>
+                <div>
+                  <span className="label">Settlement path</span>
+                  <p>{canonicalCase.review?.recommendedAction ?? "pending"}</p>
+                </div>
+                <div>
+                  <span className="label">Buyer</span>
+                  <p>{canonicalCase.buyer.displayName}</p>
+                </div>
+                <div>
+                  <span className="label">Seller</span>
+                  <p>{canonicalCase.seller?.displayName ?? "pending"}</p>
+                </div>
+              </div>
+
+              <div className="publicNarrative">
+                <div>
+                  <span className="label">Milestone rubric</span>
+                  <p>{canonicalCase.milestone.summary}</p>
+                </div>
+                <div>
+                  <span className="label">Sealed submission</span>
+                  <p>{canonicalCase.submission?.narrative}</p>
+                </div>
+                <div>
+                  <span className="label">Redacted verdict</span>
+                  <p>{canonicalCase.review?.redactedSummary}</p>
+                </div>
+              </div>
+
+              <div className="criterionList">
+                {(canonicalCase.review?.criteria ?? []).map((criterion) => (
+                  <div key={criterion.id} className="criterionResult">
+                    <strong>{criterion.label}</strong>
+                    <span className={`miniVerdict miniVerdict-${criterion.result}`}>{criterion.result}</span>
+                    <p>{criterion.notes}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="panel">
+              <div className="panelHeader">
+                <div>
+                  <h2>Why the verdict is credible</h2>
+                  <p>The public site cannot show the sealed work itself, so it shows the chain of consequences instead.</p>
+                </div>
+              </div>
+
+              <div className="credibilityList">
+                <div className="receiptItem">
+                  <strong>Escrow release happened onchain</strong>
+                  <p>The canonical case reached a released state on Ethereum Sepolia after the verdict was posted.</p>
+                </div>
+                <div className="receiptItem">
+                  <strong>Status anchored the receipt trail</strong>
+                  <p>Verdict and settlement actions are published as receipts instead of exposing the private deliverable.</p>
+                </div>
+                <div className="receiptItem">
+                  <strong>Arkhai mirrored the dispute logic</strong>
+                  <p>A live natural-language agreement was created, fulfilled, arbitrated, and collected on Sepolia.</p>
+                </div>
+                <div className="receiptItem">
+                  <strong>Blind review stayed sealed</strong>
+                  <p>The public proof shows hashes, verdicts, and txs while the deliverable remains private.</p>
+                </div>
+              </div>
+            </section>
           </section>
 
-          <section className="panel">
-            <div className="panelHeader">
-              <div>
-                <h2>Why the verdict is credible</h2>
-                <p>The public site cannot show the sealed work itself, so it shows the chain of consequences instead.</p>
+          <section className="grid publicGrid">
+            <section className="panel publicCasePanel">
+              <div className="panelHeader">
+                <div>
+                  <h2>Canonical dispute</h2>
+                  <p>Illustrative failed milestone: the sealed work stayed private, but the rubric was not satisfied and the dispute path was triggered.</p>
+                </div>
+                <div className="statusBadge status-disputed">disputed</div>
               </div>
-            </div>
 
-            <div className="credibilityList">
-              <div className="receiptItem">
-                <strong>Escrow release happened onchain</strong>
-                <p>The canonical case reached a released state on Ethereum Sepolia after the verdict was posted.</p>
+              <div className="detailGrid">
+                <div>
+                  <span className="label">Milestone value</span>
+                  <p>${canonicalDispute.amountUsd}</p>
+                </div>
+                <div>
+                  <span className="label">Settlement path</span>
+                  <p>{canonicalDispute.settlementPath}</p>
+                </div>
+                <div>
+                  <span className="label">Buyer</span>
+                  <p>{canonicalDispute.buyer}</p>
+                </div>
+                <div>
+                  <span className="label">Seller</span>
+                  <p>{canonicalDispute.seller}</p>
+                </div>
               </div>
-              <div className="receiptItem">
-                <strong>Status anchored the receipt trail</strong>
-                <p>Verdict and settlement actions are published as receipts instead of exposing the private deliverable.</p>
+
+              <div className="publicNarrative">
+                <div>
+                  <span className="label">Milestone rubric</span>
+                  <p>{canonicalDispute.milestoneSummary}</p>
+                </div>
+                <div>
+                  <span className="label">Sealed submission</span>
+                  <p>{canonicalDispute.sealedSubmission}</p>
+                </div>
+                <div>
+                  <span className="label">Redacted verdict</span>
+                  <p>{canonicalDispute.redactedVerdict}</p>
+                </div>
               </div>
-              <div className="receiptItem">
-                <strong>Arkhai mirrored the dispute logic</strong>
-                <p>A live natural-language agreement was created, fulfilled, arbitrated, and collected on Sepolia.</p>
+
+              <div className="criterionList">
+                {canonicalDispute.criteria.map((criterion) => (
+                  <div key={criterion.id} className="criterionResult">
+                    <strong>{criterion.label}</strong>
+                    <span className={`miniVerdict miniVerdict-${criterion.result}`}>{criterion.result}</span>
+                    <p>{criterion.notes}</p>
+                  </div>
+                ))}
               </div>
-              <div className="receiptItem">
-                <strong>Blind review stayed sealed</strong>
-                <p>The public proof shows hashes, verdicts, and txs while the deliverable remains private.</p>
+            </section>
+
+            <section className="panel">
+              <div className="panelHeader">
+                <div>
+                  <h2>Why the dispute is verifiable</h2>
+                  <p>The public proof still shows the consequence chain even though the failed milestone remains sealed.</p>
+                </div>
               </div>
-            </div>
+
+              <div className="credibilityList">
+                <div className="receiptItem">
+                  <strong>Failure reason was redacted, not leaked</strong>
+                  <p>The failed milestone references missing test execution evidence, not the private patch contents themselves.</p>
+                </div>
+                <div className="receiptItem">
+                  <strong>Dispute receipts anchor the branch onchain</strong>
+                  <p>
+                    BlindArbiter can post both a verdict receipt and a dispute receipt on Status, giving the failed path the same auditability as a
+                    release.
+                  </p>
+                </div>
+                <div className="receiptItem">
+                  <strong>Operator runtime keeps review sealed</strong>
+                  <p>The OpenClaw worker runs in the operator secure Ubuntu environment, so the failed submission never needs to leave that boundary.</p>
+                </div>
+                <div className="receiptCluster">
+                  {latestVerdictReceipt ? (
+                    <a className="receiptLink" href={latestVerdictReceipt.explorerUrl} target="_blank" rel="noreferrer">
+                      Verdict receipt {shortHash(latestVerdictReceipt.txHash)}
+                    </a>
+                  ) : null}
+                  {latestDisputeReceipt ? (
+                    <a className="receiptLink" href={latestDisputeReceipt.explorerUrl} target="_blank" rel="noreferrer">
+                      Dispute receipt {shortHash(latestDisputeReceipt.txHash)}
+                    </a>
+                  ) : null}
+                </div>
+              </div>
+            </section>
           </section>
-        </section>
+        </>
       ) : (
         <>
           <div className="grid">
@@ -418,6 +619,25 @@ export function Workbench({ initialData }: WorkbenchProps) {
           </section>
         </>
       )}
+
+      <section className="panel ctaPanel">
+        <div>
+          <span className="proofEyebrow">Next step</span>
+          <h2>Run BlindArbiter in your own operator environment</h2>
+          <p>
+            Clone the repo, deploy the escrow contracts, and keep sealed review inside your own Ubuntu and OpenClaw runtime while preserving the same
+            public receipt trail.
+          </p>
+        </div>
+        <div className="ctaRow ctaRowBottom">
+          <a className="ctaButton" href={deployUrl} target="_blank" rel="noreferrer">
+            Deploy Your Escrow
+          </a>
+          <a className="ctaButton ctaButtonSecondary" href={docsUrl} target="_blank" rel="noreferrer">
+            View Documentation
+          </a>
+        </div>
+      </section>
     </div>
   );
 }
@@ -432,7 +652,7 @@ function ProofPanel({ proof }: { proof?: LiveProofBundle }) {
     : "pending";
 
   return (
-    <section className="panel proofPanel">
+    <section id="live-proof" className="panel proofPanel">
       <div className="panelHeader">
         <div>
           <h2>Live Proof</h2>
