@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 
+import { isReadOnlyDeployment, READ_ONLY_MESSAGE } from "@/lib/deployment-mode";
 import { persistArkhaiAgreement } from "@/lib/integrations/arkhai";
 import { resolveEigenComputeReadiness } from "@/lib/integrations/eigencompute";
 import { publishStatusReceipt, resolveStatusReadiness } from "@/lib/integrations/status";
@@ -19,6 +20,7 @@ const ROOT = process.cwd();
 const RUNTIME_DIR = path.join(ROOT, "runtime");
 const DB_FILE = path.join(RUNTIME_DIR, "blind-arbiter.json");
 const AGENT_LOG_FILE = path.join(RUNTIME_DIR, "agent_log.json");
+const DEMO_DB_FILE = path.join(ROOT, "data", "demo-db.json");
 
 const DEMO_CASE_ID = "case-access-control-audit";
 
@@ -105,6 +107,10 @@ async function ensureDb() {
 }
 
 export async function readDb(): Promise<BlindArbiterDatabase> {
+  if (isReadOnlyDeployment()) {
+    return readSnapshotDb();
+  }
+
   await ensureDb();
   const raw = await readFile(DB_FILE, "utf8");
   const db = JSON.parse(raw) as BlindArbiterDatabase;
@@ -112,6 +118,7 @@ export async function readDb(): Promise<BlindArbiterDatabase> {
     cases: db.cases,
     agentLog: db.agentLog,
     proof: await loadLiveProof(db.cases),
+    readOnlyMode: false,
   };
 }
 
@@ -128,6 +135,23 @@ async function writeDb(db: BlindArbiterDatabase) {
     )
   );
   await writeAgentLog(db.agentLog);
+}
+
+async function readSnapshotDb(): Promise<BlindArbiterDatabase> {
+  const raw = await readFile(DEMO_DB_FILE, "utf8");
+  const db = JSON.parse(raw) as BlindArbiterDatabase;
+  return {
+    cases: db.cases,
+    agentLog: db.agentLog,
+    proof: db.proof,
+    readOnlyMode: true,
+  };
+}
+
+function assertWritableMode() {
+  if (isReadOnlyDeployment()) {
+    throw new Error(READ_ONLY_MESSAGE);
+  }
 }
 
 function logEntry(caseId: string, kind: AgentLogEntry["kind"], message: string): AgentLogEntry {
@@ -149,6 +173,8 @@ export async function createCase(input: {
   buyerSelfId?: string;
   criteria: string[];
 }) {
+  assertWritableMode();
+
   if (!input.title) {
     throw new Error("Title is required.");
   }
@@ -207,6 +233,8 @@ export async function createCase(input: {
 }
 
 export async function acceptCase(caseId: string, seller: Participant) {
+  assertWritableMode();
+
   const db = await readDb();
   const found = db.cases.find((item) => item.id === caseId);
   if (!found) {
@@ -229,6 +257,8 @@ export async function acceptCase(caseId: string, seller: Participant) {
 }
 
 export async function submitDeliverable(caseId: string, submission: Omit<DeliverableSubmission, "submittedAt">) {
+  assertWritableMode();
+
   const db = await readDb();
   const found = db.cases.find((item) => item.id === caseId);
   if (!found) {
@@ -256,6 +286,8 @@ export async function submitDeliverable(caseId: string, submission: Omit<Deliver
 }
 
 export async function completeReview(caseId: string, review: ReviewVerdict) {
+  assertWritableMode();
+
   const db = await readDb();
   const found = db.cases.find((item) => item.id === caseId);
   if (!found) {
@@ -287,6 +319,8 @@ export async function completeReview(caseId: string, review: ReviewVerdict) {
 }
 
 export async function releaseCase(caseId: string) {
+  assertWritableMode();
+
   const db = await readDb();
   const found = db.cases.find((item) => item.id === caseId);
   if (!found) {
@@ -313,6 +347,8 @@ export async function releaseCase(caseId: string) {
 }
 
 export async function disputeCase(caseId: string, reason: string) {
+  assertWritableMode();
+
   const db = await readDb();
   const found = db.cases.find((item) => item.id === caseId);
   if (!found) {

@@ -1,0 +1,511 @@
+{
+  "cases": [
+    {
+      "id": "e599f87b-a2dc-4b8d-8e49-ff9e5eea7596",
+      "title": "EigenCompute worker verification case",
+      "amountUsd": 123,
+      "buyer": {
+        "displayName": "Verifier Team",
+        "wallet": "0xBuyer000000000000000000000000000000000123",
+        "selfId": "self:buyer-local",
+        "verified": true
+      },
+      "operator": {
+        "displayName": "BlindArbiter Operator",
+        "wallet": "0xArbiterLocal000000000000000000000000000001",
+        "selfId": "self:operator-local",
+        "verified": true
+      },
+      "status": "released",
+      "createdAt": "2026-03-21T06:22:04.967Z",
+      "updatedAt": "2026-03-21T06:40:42.008Z",
+      "milestone": {
+        "summary": "Release escrow only when the sealed patch narrative explains the access fix, test evidence, and secret handling.",
+        "privacyModel": "tee_bundle",
+        "criteria": [
+          {
+            "id": "criterion-1",
+            "label": "Privileged functions are protected after the patch,Test execution evidence is documented,Secrets remain sealed during review",
+            "description": "Privileged functions are protected after the patch,Test execution evidence is documented,Secrets remain sealed during review"
+          }
+        ]
+      },
+      "receipts": [
+        {
+          "network": "status-sepolia",
+          "action": "released",
+          "payloadHash": "0x806df0b0316c5af88a181bad67d9899a8eafb87b60e7f15dc0c71200b1f6d06b",
+          "receiptHash": "0x22ce49eb278e64d873d562332ec4bb6e3be42a6984874260cd7d6dee5f8d59c5",
+          "note": "Settlement release prepared for Status publication.",
+          "mode": "anchored",
+          "createdAt": "2026-03-21T06:40:42.009Z",
+          "chainId": 1660990954,
+          "contractAddress": "0x6d67cf8ba5857425bed0d2b214e0ce2814f7db07",
+          "txHash": "0x99fd4eeeecfbfe23e585a9547f475418e32da9f3cd8631cdffa7fa7b9fa15974",
+          "explorerUrl": "https://sepoliascan.status.network/tx/0x99fd4eeeecfbfe23e585a9547f475418e32da9f3cd8631cdffa7fa7b9fa15974"
+        },
+        {
+          "network": "status-sepolia",
+          "action": "verdict_posted",
+          "payloadHash": "0x806df0b0316c5af88a181bad67d9899a8eafb87b60e7f15dc0c71200b1f6d06b",
+          "receiptHash": "0x18df4acbd98c0ee848e0b959ddaa77d35f4db7e1101494f98f9b86addb5f4988",
+          "note": "Verdict hash prepared for Status publication.",
+          "mode": "anchored",
+          "createdAt": "2026-03-21T06:23:07.195Z",
+          "chainId": 1660990954,
+          "contractAddress": "0x6d67cf8ba5857425bed0d2b214e0ce2814f7db07",
+          "txHash": "0x7bd8607df39090a914fcb0b08fdd0af691bafbf5d556d788b1ae05a4ad41f306",
+          "explorerUrl": "https://sepoliascan.status.network/tx/0x7bd8607df39090a914fcb0b08fdd0af691bafbf5d556d788b1ae05a4ad41f306"
+        }
+      ],
+      "integrations": {
+        "eigenCompute": "ready",
+        "self": "ready",
+        "status": "ready"
+      },
+      "seller": {
+        "displayName": "Verified Seller",
+        "wallet": "0xSeller000000000000000000000000000000000123",
+        "selfId": "self:seller-local",
+        "verified": true
+      },
+      "submission": {
+        "artifactName": "worker-proof-bundle.zip",
+        "artifactType": "code_bundle",
+        "artifactHash": "0xworkerartifacthash",
+        "storageUri": "sealed://bundle/eigencompute-proof",
+        "narrative": "The private patch explains how privileged functions are protected after the patch, documents test execution evidence, and confirms secrets remain sealed during review.",
+        "submittedAt": "2026-03-21T06:22:59.457Z"
+      },
+      "review": {
+        "verdict": "pass",
+        "confidence": 1,
+        "redactedSummary": "All private acceptance signals aligned with the milestone rubric.",
+        "reportHash": "0x806df0b0316c5af88a181bad67d9899a8eafb87b60e7f15dc0c71200b1f6d06b",
+        "criteria": [
+          {
+            "id": "criterion-1",
+            "label": "Privileged functions are protected after the patch,Test execution evidence is documented,Secrets remain sealed during review",
+            "result": "pass",
+            "notes": "Matched 24 relevant signals inside the private narrative."
+          }
+        ],
+        "recommendedAction": "release",
+        "computedAt": "2026-03-21T06:23:07.137Z",
+        "execution": {
+          "mode": "ready",
+          "strategy": "http_worker",
+          "image": "blindarbiter/arbiter-worker:eigencompute-dev",
+          "workerVersion": "eigencompute-worker-v1",
+          "requestHash": "0x6e442ec2b68fb879009f322db299ace4783f90f7ab8a2ffe563e185bb49ef64a",
+          "attestationHash": "0xb0b0e1f9def1442b8895bcbc589920bb088a8970e8ce41e53fab3a2b35d28a59",
+          "enclaveProof": "container-review-worker",
+          "workerUrl": null
+        }
+      },
+      "arkhaiAgreement": {
+        "protocol": "natural-language-agreements",
+        "network": "sepolia",
+        "oracleAddress": "0xc5c132B69f57dAAAb75d9ebA86cab504b272Ccbc",
+        "tokenAddress": "<set_NLA_TOKEN_ADDRESS>",
+        "amount": "123",
+        "llmDemand": {
+          "arbitrationProvider": "OpenAI",
+          "arbitrationModel": "gpt-4o-mini",
+          "arbitrationPrompt": "You are arbitrating a Natural Language Agreement escrow.\nDemand: {{demand}}\nFulfillment: {{obligation}}\nReturn true only if the fulfillment clearly satisfies every explicit criterion in the demand.\nReturn false if any criterion is missing, contradicted, or uncertain.\nDo not assume private evidence that is not explicitly described in the fulfillment.",
+          "demand": "BlindArbiter case e599f87b-a2dc-4b8d-8e49-ff9e5eea7596: release 123 units of escrowed value to Verified Seller only if the fulfillment proves the following natural-language demand. Release escrow only when the sealed patch narrative explains the access fix, test evidence, and secret handling. Acceptance criteria: Privileged functions are protected after the patch,Test execution evidence is documented,Secrets remain sealed during review. If any criterion is missing, contradicted, or unclear, the escrow must remain disputed or uncollected."
+        },
+        "encodedDemand": "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000028000000000000000000000000000000000000000000000000000000000000000064f70656e41490000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b6770742d346f2d6d696e69000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000015f596f7520617265206172626974726174696e672061204e61747572616c204c616e67756167652041677265656d656e7420657363726f772e0a44656d616e643a207b7b64656d616e647d7d0a46756c66696c6c6d656e743a207b7b6f626c69676174696f6e7d7d0a52657475726e2074727565206f6e6c79206966207468652066756c66696c6c6d656e7420636c6561726c7920736174697366696573206576657279206578706c6963697420637269746572696f6e20696e207468652064656d616e642e0a52657475726e2066616c736520696620616e7920637269746572696f6e206973206d697373696e672c20636f6e7472616469637465642c206f7220756e6365727461696e2e0a446f206e6f7420617373756d6520707269766174652065766964656e63652074686174206973206e6f74206578706c696369746c792064657363726962656420696e207468652066756c66696c6c6d656e742e00000000000000000000000000000000000000000000000000000000000000021f426c696e644172626974657220636173652065353939663837622d613264632d346238642d386534392d6666396535656561373539363a2072656c656173652031323320756e697473206f6620657363726f7765642076616c756520746f2056657269666965642053656c6c6572206f6e6c79206966207468652066756c66696c6c6d656e742070726f7665732074686520666f6c6c6f77696e67206e61747572616c2d6c616e67756167652064656d616e642e2052656c6561736520657363726f77206f6e6c79207768656e20746865207365616c6564207061746368206e6172726174697665206578706c61696e732074686520616363657373206669782c20746573742065766964656e63652c20616e64207365637265742068616e646c696e672e20416363657074616e63652063726974657269613a2050726976696c656765642066756e6374696f6e73206172652070726f746563746564206166746572207468652070617463682c5465737420657865637574696f6e2065766964656e636520697320646f63756d656e7465642c536563726574732072656d61696e207365616c656420647572696e67207265766965772e20496620616e7920637269746572696f6e206973206d697373696e672c20636f6e7472616469637465642c206f7220756e636c6561722c2074686520657363726f77206d7573742072656d61696e206469737075746564206f7220756e636f6c6c65637465642e00",
+        "fulfillmentStatement": "Artifact worker-proof-bundle.zip was submitted at 2026-03-21T06:22:59.457Z. Seller narrative: The private patch explains how privileged functions are protected after the patch, documents test execution evidence, and confirms secrets remain sealed during review. BlindArbiter redacted verdict: All private acceptance signals aligned with the milestone rubric.",
+        "createCommand": "nla escrow:create \\\n  --demand 'BlindArbiter case e599f87b-a2dc-4b8d-8e49-ff9e5eea7596: release 123 units of escrowed value to Verified Seller only if the fulfillment proves the following natural-language demand. Release escrow only when the sealed patch narrative explains the access fix, test evidence, and secret handling. Acceptance criteria: Privileged functions are protected after the patch,Test execution evidence is documented,Secrets remain sealed during review. If any criterion is missing, contradicted, or unclear, the escrow must remain disputed or uncollected.' \\\n  --amount 123 \\\n  --token <set_NLA_TOKEN_ADDRESS> \\\n  --oracle 0xc5c132B69f57dAAAb75d9ebA86cab504b272Ccbc \\\n  --arbitration-provider 'OpenAI' \\\n  --arbitration-model 'gpt-4o-mini' \\\n  --arbitration-prompt 'You are arbitrating a Natural Language Agreement escrow.\nDemand: {{demand}}\nFulfillment: {{obligation}}\nReturn true only if the fulfillment clearly satisfies every explicit criterion in the demand.\nReturn false if any criterion is missing, contradicted, or uncertain.\nDo not assume private evidence that is not explicitly described in the fulfillment.'",
+        "statusCommand": "nla escrow:status --escrow-uid <escrow_uid>",
+        "collectCommand": "nla escrow:collect --escrow-uid <escrow_uid> --fulfillment-uid <fulfillment_uid>",
+        "generatedAt": "2026-03-21T06:40:52.404Z",
+        "fulfillCommand": "nla escrow:fulfill \\\n  --escrow-uid <escrow_uid> \\\n  --fulfillment 'Artifact worker-proof-bundle.zip was submitted at 2026-03-21T06:22:59.457Z. Seller narrative: The private patch explains how privileged functions are protected after the patch, documents test execution evidence, and confirms secrets remain sealed during review. BlindArbiter redacted verdict: All private acceptance signals aligned with the milestone rubric.' \\\n  --oracle 0xc5c132B69f57dAAAb75d9ebA86cab504b272Ccbc"
+      }
+    },
+    {
+      "id": "case-access-control-audit",
+      "title": "Private patch verification for access control fix",
+      "amountUsd": 350,
+      "buyer": {
+        "displayName": "Acme Protocol",
+        "wallet": "0xBuyerDemo000000000000000000000000000000001",
+        "selfId": "self:buyer-demo",
+        "verified": true
+      },
+      "operator": {
+        "displayName": "BlindArbiter Operator",
+        "wallet": "0xArbiterDemo0000000000000000000000000000001",
+        "selfId": "self:operator-demo",
+        "verified": true
+      },
+      "status": "disputed",
+      "createdAt": "2026-03-19T14:55:26.620Z",
+      "updatedAt": "2026-03-19T14:59:34.375Z",
+      "milestone": {
+        "summary": "Release payment only if the private Solidity patch removes the access control issue and the acceptance narrative explains how tests were run.",
+        "privacyModel": "tee_bundle",
+        "criteria": [
+          {
+            "id": "access-control",
+            "label": "Access control fix",
+            "description": "Submission must describe how privileged functions are protected after the patch."
+          },
+          {
+            "id": "tests-pass",
+            "label": "Tests pass",
+            "description": "Submission must describe test coverage or test execution evidence."
+          },
+          {
+            "id": "no-secret-leak",
+            "label": "No secret leakage",
+            "description": "Private material should stay sealed while still producing a verdict hash."
+          }
+        ]
+      },
+      "receipts": [
+        {
+          "network": "status-sepolia",
+          "action": "disputed",
+          "payloadHash": "0x6050743e39593a33ef0cfc7ab05a0eb4bcfe05ec32d8080b008bc7da1b723e1d",
+          "receiptHash": "0xf74b27d4c85a2c18d6652918a108e9a659e4e8ee31b9672318f97b5b26aefe8a",
+          "note": "Dispute opened: Manual dispute requested after reviewing the redacted output.",
+          "mode": "anchored",
+          "createdAt": "2026-03-19T14:59:34.376Z",
+          "chainId": 1660990954,
+          "contractAddress": "0x6d67cf8ba5857425bed0d2b214e0ce2814f7db07",
+          "txHash": "0xde939dd769c3e74cc944567afcca2c6d938881e82ac9c54230037c2203a2fa8a",
+          "explorerUrl": "https://sepoliascan.status.network/tx/0xde939dd769c3e74cc944567afcca2c6d938881e82ac9c54230037c2203a2fa8a"
+        },
+        {
+          "network": "status-sepolia",
+          "action": "verdict_posted",
+          "payloadHash": "0x6050743e39593a33ef0cfc7ab05a0eb4bcfe05ec32d8080b008bc7da1b723e1d",
+          "receiptHash": "0x06837251c36b3b85f79007b6870c445d48166cce1061f00d8fcd4c97f8a7f3b0",
+          "note": "Verdict hash prepared for Status publication.",
+          "mode": "anchored",
+          "createdAt": "2026-03-19T14:57:32.055Z",
+          "chainId": 1660990954,
+          "contractAddress": "0x6d67cf8ba5857425bed0d2b214e0ce2814f7db07",
+          "txHash": "0xfafa66f23d835d9785e889d13a7ccfc97f670874c262c97b0a4924684ab40178",
+          "explorerUrl": "https://sepoliascan.status.network/tx/0xfafa66f23d835d9785e889d13a7ccfc97f670874c262c97b0a4924684ab40178"
+        }
+      ],
+      "integrations": {
+        "eigenCompute": "local_stub",
+        "self": "ready",
+        "status": "ready"
+      },
+      "seller": {
+        "displayName": "Sealed Contributor",
+        "wallet": "0xSeller000000000000000000000000000000000000",
+        "selfId": "self:seller-local",
+        "verified": true
+      },
+      "submission": {
+        "artifactName": "patch-bundle.zip",
+        "artifactType": "code_bundle",
+        "artifactHash": "0xprivateartifacthash",
+        "storageUri": "sealed://bundle/access-control-fix",
+        "narrative": "The private patch updates privileged functions with role checks, explains how the access control fix works, documents the passing tests, and keeps secrets sealed while producing a verdict hash.",
+        "submittedAt": "2026-03-19T14:57:19.368Z"
+      },
+      "review": {
+        "verdict": "needs_dispute",
+        "confidence": 0.67,
+        "redactedSummary": "BlindArbiter detected mixed signals and recommends human review.",
+        "reportHash": "0x6050743e39593a33ef0cfc7ab05a0eb4bcfe05ec32d8080b008bc7da1b723e1d",
+        "criteria": [
+          {
+            "id": "access-control",
+            "label": "Access control fix",
+            "result": "pass",
+            "notes": "Matched 5 relevant signals inside the private narrative."
+          },
+          {
+            "id": "tests-pass",
+            "label": "Tests pass",
+            "result": "fail",
+            "notes": "The submission narrative does not provide enough private evidence for this criterion."
+          },
+          {
+            "id": "no-secret-leak",
+            "label": "No secret leakage",
+            "result": "pass",
+            "notes": "Matched 6 relevant signals inside the private narrative."
+          }
+        ],
+        "recommendedAction": "dispute",
+        "computedAt": "2026-03-19T14:57:32.050Z"
+      }
+    }
+  ],
+  "agentLog": [
+    {
+      "id": "baf6043a-f00f-4446-8ec8-6527ebbbfe91",
+      "caseId": "e599f87b-a2dc-4b8d-8e49-ff9e5eea7596",
+      "kind": "released",
+      "message": "Escrow marked as released from the BlindArbiter verdict.",
+      "createdAt": "2026-03-21T06:40:52.531Z"
+    },
+    {
+      "id": "2a15c1b3-f28c-4df4-a7ae-b6cb68b29f21",
+      "caseId": "e599f87b-a2dc-4b8d-8e49-ff9e5eea7596",
+      "kind": "review_completed",
+      "message": "Review completed with verdict pass at confidence 1.",
+      "createdAt": "2026-03-21T06:23:13.226Z"
+    },
+    {
+      "id": "8e30e1ca-50ed-4cba-b45a-cf162dc69284",
+      "caseId": "e599f87b-a2dc-4b8d-8e49-ff9e5eea7596",
+      "kind": "deliverable_submitted",
+      "message": "Private deliverable worker-proof-bundle.zip was sealed for review.",
+      "createdAt": "2026-03-21T06:22:59.457Z"
+    },
+    {
+      "id": "0ab2ae13-6d63-4263-9c1a-09f2c125f9b1",
+      "caseId": "e599f87b-a2dc-4b8d-8e49-ff9e5eea7596",
+      "kind": "case_accepted",
+      "message": "Verified Seller accepted the milestone and bound identity.",
+      "createdAt": "2026-03-21T06:22:51.425Z"
+    },
+    {
+      "id": "6e6c9923-2b7a-4e01-b214-5d6402597d93",
+      "caseId": "e599f87b-a2dc-4b8d-8e49-ff9e5eea7596",
+      "kind": "case_created",
+      "message": "Case created and escrow marked as funded for 123 USD.",
+      "createdAt": "2026-03-21T06:22:05.028Z"
+    },
+    {
+      "id": "aff21ff3-df9d-4873-87cc-f90db8d8ae0a",
+      "caseId": "case-access-control-audit",
+      "kind": "disputed",
+      "message": "Dispute opened with reason: Manual dispute requested after reviewing the redacted output.",
+      "createdAt": "2026-03-19T14:59:42.088Z"
+    },
+    {
+      "id": "9d5b1dcd-3af3-4a7b-b19f-731db7d1428d",
+      "caseId": "case-access-control-audit",
+      "kind": "review_completed",
+      "message": "Review completed with verdict needs_dispute at confidence 0.67.",
+      "createdAt": "2026-03-19T14:57:37.393Z"
+    },
+    {
+      "id": "5a3937ac-f5f1-4e86-a4ae-b6819483cb30",
+      "caseId": "case-access-control-audit",
+      "kind": "deliverable_submitted",
+      "message": "Private deliverable patch-bundle.zip was sealed for review.",
+      "createdAt": "2026-03-19T14:57:19.368Z"
+    },
+    {
+      "id": "23918143-de15-4206-b1d7-f8bf7de95f53",
+      "caseId": "case-access-control-audit",
+      "kind": "case_accepted",
+      "message": "Sealed Contributor accepted the milestone and bound identity.",
+      "createdAt": "2026-03-19T14:57:08.273Z"
+    },
+    {
+      "id": "81334b44-9c22-4899-8021-a34cccc6d4c7",
+      "caseId": "case-access-control-audit",
+      "kind": "case_created",
+      "message": "Seeded the demo case so the review and settlement loop is visible immediately.",
+      "createdAt": "2026-03-19T14:55:26.623Z"
+    }
+  ],
+  "proof": {
+    "statusDeployment": {
+      "network": "status-sepolia",
+      "chainId": 1660990954,
+      "rpcUrl": "https://public.sepolia.rpc.status.network",
+      "contractAddress": "0x6d67cf8ba5857425bed0d2b214e0ce2814f7db07",
+      "txHash": "0x05d0a1d988998aef1dcde8c704c47fe98a7c34b1d02ebd2d6e74f427375f20cc",
+      "explorerUrl": "https://sepoliascan.status.network/tx/0x05d0a1d988998aef1dcde8c704c47fe98a7c34b1d02ebd2d6e74f427375f20cc",
+      "deployedAt": "2026-03-19T14:55:06.954Z"
+    },
+    "sepoliaEscrowDeployment": {
+      "network": "ethereum-sepolia",
+      "chainId": 11155111,
+      "rpcUrl": "https://ethereum-sepolia-rpc.publicnode.com",
+      "contractAddress": "0x89cf6d586902b8750e6d6e5158c51e838cae7aa0",
+      "txHash": "0x9fc631c9e5a5a5cf21c2f41920b8ab78531b37eb1c001a6c86ba0a89003c92eb",
+      "explorerUrl": "https://sepolia.etherscan.io/tx/0x9fc631c9e5a5a5cf21c2f41920b8ab78531b37eb1c001a6c86ba0a89003c92eb",
+      "deployer": "0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2",
+      "deployedAt": "2026-03-21T13:46:06.900Z"
+    },
+    "sepoliaEscrowSmoke": {
+      "network": "ethereum-sepolia",
+      "chainId": 11155111,
+      "contractAddress": "0x89cf6d586902b8750e6d6e5158c51e838cae7aa0",
+      "operator": "0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2",
+      "caseId": "3",
+      "amountEth": "0.001",
+      "hashes": {
+        "specHash": "0x53bc983a0abed43e9f47423e5db7deddaa5663a39c4cffa95b88a3da6cb0a047",
+        "deliverableHash": "0x6c5c15eaf55eede980d77589fab2d69c664967c487809e639ef471cf6f9d7fd0",
+        "verdictHash": "0x2c3ea89412f89975136188f0f13531011b206bf4261c415a2bc93334594abb03"
+      },
+      "transactions": [
+        {
+          "label": "create_case",
+          "txHash": "0xb1ed8b1c711da9ed4bccd02c7e47fa50ffff49abdfddc678274d20a7162cbb4a",
+          "explorerUrl": "https://sepolia.etherscan.io/tx/0xb1ed8b1c711da9ed4bccd02c7e47fa50ffff49abdfddc678274d20a7162cbb4a",
+          "blockNumber": "10491195",
+          "gasUsed": "168272",
+          "status": "success"
+        },
+        {
+          "label": "accept_case",
+          "txHash": "0xea8d436faf954bf7e30ec87a7f8b92eadc2416f8185bf97cff87ba093946473e",
+          "explorerUrl": "https://sepolia.etherscan.io/tx/0xea8d436faf954bf7e30ec87a7f8b92eadc2416f8185bf97cff87ba093946473e",
+          "blockNumber": "10491196",
+          "gasUsed": "33039",
+          "status": "success"
+        },
+        {
+          "label": "submit_deliverable",
+          "txHash": "0x70f561eda4fda0c1150132847ea6c8f009b479928e632fa552eb832015f7f322",
+          "explorerUrl": "https://sepolia.etherscan.io/tx/0x70f561eda4fda0c1150132847ea6c8f009b479928e632fa552eb832015f7f322",
+          "blockNumber": "10491197",
+          "gasUsed": "55288",
+          "status": "success"
+        },
+        {
+          "label": "post_verdict",
+          "txHash": "0x2904cb0d4aca0f89dce9cbae37e9c727093af9570e97583fcf2210ac13e691e8",
+          "explorerUrl": "https://sepolia.etherscan.io/tx/0x2904cb0d4aca0f89dce9cbae37e9c727093af9570e97583fcf2210ac13e691e8",
+          "blockNumber": "10491198",
+          "gasUsed": "55931",
+          "status": "success"
+        },
+        {
+          "label": "release",
+          "txHash": "0xebacea493b071482cd9d5859cec7c07bc765c0b4ea3561554597b17c96fce729",
+          "explorerUrl": "https://sepolia.etherscan.io/tx/0xebacea493b071482cd9d5859cec7c07bc765c0b4ea3561554597b17c96fce729",
+          "blockNumber": "10491199",
+          "gasUsed": "40300",
+          "status": "success"
+        }
+      ],
+      "completedAt": "2026-03-21T13:54:25.958Z",
+      "finalCase": [
+        "0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2",
+        "0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2",
+        "0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2",
+        "0",
+        "0x53bc983a0abed43e9f47423e5db7deddaa5663a39c4cffa95b88a3da6cb0a047",
+        "0x6c5c15eaf55eede980d77589fab2d69c664967c487809e639ef471cf6f9d7fd0",
+        "0x2c3ea89412f89975136188f0f13531011b206bf4261c415a2bc93334594abb03",
+        7
+      ]
+    },
+    "arkhaiLive": {
+      "generatedAt": "2026-03-21T21:57:57Z",
+      "network": "ethereum-sepolia",
+      "chainId": 11155111,
+      "operator": "0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2",
+      "oracleAddress": "0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2",
+      "trustedOracleArbiter": "0x3B2a812E3eb3B729D40d866Da16c2BB2b6cDd2f2",
+      "eas": "0xC2679fBD37d54388Ce493F1DB75320D236e1815e",
+      "demand": "Release the escrow only if the fulfillment shows that BlindArbiter reviewed a sealed deliverable, explained why it passed, and kept the private work hidden.",
+      "fulfillment": "BlindArbiter reviewed a sealed deliverable, confirmed the private work satisfied the milestone, explained the pass in redacted language, and did not reveal the private artifact.",
+      "escrowUid": "0x7dcb3e401d6b849ac2bde9f989348ee0fa80e76d19ab1a8dabf57b6ef2ac9502",
+      "fulfillmentUid": "0xa6d957eff3f9afcdf9689e4896b407292f73a7a32274be11ffe0078c26141da8",
+      "decisionTxHash": "0x2719b496bed7b77e8cd3131c127d28c47a1c799f9be61c0491bd9e712b79fc46",
+      "decisionKey": "0x8f77bf4563156d9570a083567fd9532fcdaed215fbd0952c71b6d2b434ac7892",
+      "collectionTxHash": "0xc6d0a5bae417cb2d694d75c82ad2e28ffd308a3577f6734c610f576f0352f937",
+      "token": {
+        "address": "0xf497fc488671c9a2bfa8d001ba3660d9386384d6",
+        "symbol": "BATD",
+        "amountRaw": "100",
+        "totalSupply": "1000000000000000000000000",
+        "balanceBeforeEscrow": "1000000000000000000000000",
+        "balanceAfterLifecycle": "1000000000000000000000000"
+      },
+      "nativeBalance": {
+        "before": "8982949691096144",
+        "after": "8980183230104354"
+      },
+      "transactions": [
+        {
+          "label": "token_deploy",
+          "txHash": "0x6a17e3da4b45767dbd6a87f1791f47a046f1de0057286d4e336ec5b3b3076d86",
+          "explorerUrl": "https://sepolia.etherscan.io/tx/0x6a17e3da4b45767dbd6a87f1791f47a046f1de0057286d4e336ec5b3b3076d86"
+        },
+        {
+          "label": "create_escrow",
+          "txHash": "0x459cccec9cc5272687f02a0ece1d09f476f95f5dc8a7fcbe48c648846903a98f",
+          "explorerUrl": "https://sepolia.etherscan.io/tx/0x459cccec9cc5272687f02a0ece1d09f476f95f5dc8a7fcbe48c648846903a98f"
+        },
+        {
+          "label": "fulfill_string_obligation",
+          "txHash": "0x7561971466203c32f75eaadab0bafc9b783a019338bd51c1f2170b715e7ff851",
+          "explorerUrl": "https://sepolia.etherscan.io/tx/0x7561971466203c32f75eaadab0bafc9b783a019338bd51c1f2170b715e7ff851"
+        },
+        {
+          "label": "request_arbitration",
+          "txHash": "0x4aca0e8e80945514a18fc5492f60ac797fe8772d58311fcc157058c20b869db8",
+          "explorerUrl": "https://sepolia.etherscan.io/tx/0x4aca0e8e80945514a18fc5492f60ac797fe8772d58311fcc157058c20b869db8"
+        },
+        {
+          "label": "oracle_decision",
+          "txHash": "0x2719b496bed7b77e8cd3131c127d28c47a1c799f9be61c0491bd9e712b79fc46",
+          "explorerUrl": "https://sepolia.etherscan.io/tx/0x2719b496bed7b77e8cd3131c127d28c47a1c799f9be61c0491bd9e712b79fc46"
+        },
+        {
+          "label": "collect_escrow",
+          "txHash": "0xc6d0a5bae417cb2d694d75c82ad2e28ffd308a3577f6734c610f576f0352f937",
+          "explorerUrl": "https://sepolia.etherscan.io/tx/0xc6d0a5bae417cb2d694d75c82ad2e28ffd308a3577f6734c610f576f0352f937"
+        }
+      ]
+    },
+    "anchoredReceipts": [
+      {
+        "caseId": "e599f87b-a2dc-4b8d-8e49-ff9e5eea7596",
+        "caseTitle": "EigenCompute worker verification case",
+        "action": "released",
+        "txHash": "0x99fd4eeeecfbfe23e585a9547f475418e32da9f3cd8631cdffa7fa7b9fa15974",
+        "explorerUrl": "https://sepoliascan.status.network/tx/0x99fd4eeeecfbfe23e585a9547f475418e32da9f3cd8631cdffa7fa7b9fa15974",
+        "createdAt": "2026-03-21T06:40:42.009Z",
+        "network": "status-sepolia",
+        "receiptHash": "0x22ce49eb278e64d873d562332ec4bb6e3be42a6984874260cd7d6dee5f8d59c5"
+      },
+      {
+        "caseId": "e599f87b-a2dc-4b8d-8e49-ff9e5eea7596",
+        "caseTitle": "EigenCompute worker verification case",
+        "action": "verdict_posted",
+        "txHash": "0x7bd8607df39090a914fcb0b08fdd0af691bafbf5d556d788b1ae05a4ad41f306",
+        "explorerUrl": "https://sepoliascan.status.network/tx/0x7bd8607df39090a914fcb0b08fdd0af691bafbf5d556d788b1ae05a4ad41f306",
+        "createdAt": "2026-03-21T06:23:07.195Z",
+        "network": "status-sepolia",
+        "receiptHash": "0x18df4acbd98c0ee848e0b959ddaa77d35f4db7e1101494f98f9b86addb5f4988"
+      },
+      {
+        "caseId": "case-access-control-audit",
+        "caseTitle": "Private patch verification for access control fix",
+        "action": "disputed",
+        "txHash": "0xde939dd769c3e74cc944567afcca2c6d938881e82ac9c54230037c2203a2fa8a",
+        "explorerUrl": "https://sepoliascan.status.network/tx/0xde939dd769c3e74cc944567afcca2c6d938881e82ac9c54230037c2203a2fa8a",
+        "createdAt": "2026-03-19T14:59:34.376Z",
+        "network": "status-sepolia",
+        "receiptHash": "0xf74b27d4c85a2c18d6652918a108e9a659e4e8ee31b9672318f97b5b26aefe8a"
+      },
+      {
+        "caseId": "case-access-control-audit",
+        "caseTitle": "Private patch verification for access control fix",
+        "action": "verdict_posted",
+        "txHash": "0xfafa66f23d835d9785e889d13a7ccfc97f670874c262c97b0a4924684ab40178",
+        "explorerUrl": "https://sepoliascan.status.network/tx/0xfafa66f23d835d9785e889d13a7ccfc97f670874c262c97b0a4924684ab40178",
+        "createdAt": "2026-03-19T14:57:32.055Z",
+        "network": "status-sepolia",
+        "receiptHash": "0x06837251c36b3b85f79007b6870c445d48166cce1061f00d8fcd4c97f8a7f3b0"
+      }
+    ],
+    "summary": {
+      "statusReceiptCount": 4,
+      "sepoliaTxCount": 5,
+      "canonicalCaseId": "3",
+      "arkhaiTxCount": 6
+    }
+  }
+}

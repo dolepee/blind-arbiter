@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 
+import { READ_ONLY_MESSAGE } from "@/lib/deployment-mode";
 import type { BlindArbiterCase, BlindArbiterDatabase, LiveProofBundle } from "@/lib/types";
 
 interface WorkbenchProps {
@@ -81,6 +82,7 @@ export function Workbench({ initialData }: WorkbenchProps) {
     ready: data.cases.filter((item) => item.status === "passed").length,
     reviewable: data.cases.filter((item) => item.status === "submitted").length,
   };
+  const readOnlyMode = data.readOnlyMode === true;
   const proof = data.proof;
   const eigenComputeReadiness = data.cases.some((item) => item.integrations.eigenCompute === "ready")
     ? "local worker live"
@@ -133,6 +135,7 @@ export function Workbench({ initialData }: WorkbenchProps) {
         <span>Arkhai: live Sepolia lifecycle complete</span>
       </section>
 
+      {readOnlyMode ? <div className="errorBanner">{READ_ONLY_MESSAGE}</div> : null}
       {error ? <div className="errorBanner">{error}</div> : null}
 
       <ProofPanel proof={proof} />
@@ -150,6 +153,10 @@ export function Workbench({ initialData }: WorkbenchProps) {
             className="form"
             onSubmit={(event) => {
               event.preventDefault();
+              if (readOnlyMode) {
+                setError(READ_ONLY_MESSAGE);
+                return;
+              }
               setError(null);
               startTransition(async () => {
                 try {
@@ -198,7 +205,7 @@ export function Workbench({ initialData }: WorkbenchProps) {
               <span>Criteria, one per line</span>
               <textarea rows={5} value={createForm.criteria} onChange={(event) => setCreateForm({ ...createForm, criteria: event.target.value })} />
             </label>
-            <button type="submit" disabled={isPending}>Create funded case</button>
+            <button type="submit" disabled={isPending || readOnlyMode}>Create funded case</button>
           </form>
         </section>
 
@@ -216,6 +223,7 @@ export function Workbench({ initialData }: WorkbenchProps) {
                 key={caseFile.id}
                 caseFile={caseFile}
                 busy={isPending}
+                readOnlyMode={readOnlyMode}
                 onError={setError}
                 onRefresh={refreshData}
               />
@@ -422,11 +430,13 @@ function ProofPanel({ proof }: { proof?: LiveProofBundle }) {
 function CaseCard({
   caseFile,
   busy,
+  readOnlyMode,
   onRefresh,
   onError,
 }: {
   caseFile: BlindArbiterCase;
   busy: boolean;
+  readOnlyMode: boolean;
   onRefresh: () => Promise<void>;
   onError: (value: string | null) => void;
 }) {
@@ -486,6 +496,10 @@ function CaseCard({
           className="miniForm"
           onSubmit={(event) => {
             event.preventDefault();
+            if (readOnlyMode) {
+              onError(READ_ONLY_MESSAGE);
+              return;
+            }
             onError(null);
             void postJson(`/api/cases/${caseFile.id}/accept`, {
               displayName: sellerName,
@@ -502,7 +516,7 @@ function CaseCard({
             <input value={sellerSelfId} onChange={(event) => setSellerSelfId(event.target.value)} placeholder="Self ID" />
           </div>
           <input value={sellerWallet} onChange={(event) => setSellerWallet(event.target.value)} placeholder="Seller wallet" />
-          <button type="submit" disabled={busy}>Accept with identity</button>
+          <button type="submit" disabled={busy || readOnlyMode}>Accept with identity</button>
         </form>
       ) : null}
 
@@ -511,6 +525,10 @@ function CaseCard({
           className="miniForm"
           onSubmit={(event) => {
             event.preventDefault();
+            if (readOnlyMode) {
+              onError(READ_ONLY_MESSAGE);
+              return;
+            }
             onError(null);
             void postJson(`/api/cases/${caseFile.id}/submit`, {
               artifactName,
@@ -533,7 +551,7 @@ function CaseCard({
             <input value={storageUri} onChange={(event) => setStorageUri(event.target.value)} placeholder="Storage URI" />
           </div>
           <textarea rows={4} value={narrative} onChange={(event) => setNarrative(event.target.value)} />
-          <button type="submit" disabled={busy}>Seal deliverable</button>
+          <button type="submit" disabled={busy || readOnlyMode}>Seal deliverable</button>
         </form>
       ) : null}
 
@@ -549,8 +567,12 @@ function CaseCard({
         <div className="actionRow">
           <button
             type="button"
-            disabled={busy}
+            disabled={busy || readOnlyMode}
             onClick={() => {
+            if (readOnlyMode) {
+              onError(READ_ONLY_MESSAGE);
+              return;
+            }
             onError(null);
             void postJson(`/api/cases/${caseFile.id}/review`)
               .then(() => onRefresh())
@@ -657,8 +679,12 @@ function CaseCard({
       <div className="actionRow">
         <button
           type="button"
-          disabled={busy || caseFile.status !== "passed"}
+          disabled={busy || readOnlyMode || caseFile.status !== "passed"}
           onClick={() => {
+            if (readOnlyMode) {
+              onError(READ_ONLY_MESSAGE);
+              return;
+            }
             onError(null);
             void postJson(`/api/cases/${caseFile.id}/release`)
               .then(() => onRefresh())
@@ -670,9 +696,13 @@ function CaseCard({
         <input value={disputeReason} onChange={(event) => setDisputeReason(event.target.value)} placeholder="Dispute reason" />
         <button
           type="button"
-          disabled={busy}
+          disabled={busy || readOnlyMode}
           className="secondary"
           onClick={() => {
+            if (readOnlyMode) {
+              onError(READ_ONLY_MESSAGE);
+              return;
+            }
             onError(null);
             void postJson(`/api/cases/${caseFile.id}/dispute`, { reason: disputeReason })
               .then(() => onRefresh())

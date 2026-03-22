@@ -250,4 +250,5 @@ export interface BlindArbiterDatabase {
   cases: BlindArbiterCase[];
   agentLog: AgentLogEntry[];
   proof?: LiveProofBundle;
+  readOnlyMode?: boolean;
 }

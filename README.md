@@ -2,6 +2,11 @@
 
 BlindArbiter is a confidential milestone escrow arbiter for humans and agents.
 
+Public proof site:
+- `https://blind-arbiter.vercel.app`
+- the Vercel deployment is intentionally read-only and serves committed proof snapshots
+- live case execution remains on the operator environment
+
 ## Live Proof
 
 BlindArbiter already has real onchain proof on two networks.
