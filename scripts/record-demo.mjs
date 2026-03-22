@@ -14,12 +14,6 @@ const finalVideoPath = path.join(videoDir, "blind-arbiter-demo.mp4");
 const assetVideoPath = path.join(root, "submission", "assets", "blind-arbiter-demo.mp4");
 
 const siteUrl = "https://blind-arbiter.vercel.app";
-const escrowTxUrl =
-  "https://sepolia.etherscan.io/tx/0x8456115d3cc1f69063abaee385fc6837c804997aecfeb5c8f3e991fdd27b4f4a";
-const statusTxUrl =
-  "https://sepoliascan.status.network/tx/0x7bd8607df39090a914fcb0b08fdd0af691bafbf5d556d788b1ae05a4ad41f306";
-const arkhaiTxUrl =
-  "https://sepolia.etherscan.io/tx/0xc6d0a5bae417cb2d694d75c82ad2e28ffd308a3577f6734c610f576f0352f937";
 
 function wait(page, ms) {
   return page.waitForTimeout(ms);
@@ -97,23 +91,6 @@ async function smoothScrollToSelector(page, selector, durationMs, fallbackRatio 
 async function scrollToTop(page, durationMs = 2500) {
   const currentY = await page.evaluate(() => window.scrollY);
   await smoothScrollBy(page, -currentY, durationMs);
-}
-
-// Playwright records one video per page. To keep a single continuous demo file,
-// proof pages are visited sequentially in the same page instead of separate tab videos.
-async function visitProofPage(page, url, options = {}) {
-  await page.goto(url, { waitUntil: "domcontentloaded" });
-  await waitForStableLoad(page);
-
-  await wait(page, options.initialPauseMs ?? 3500);
-
-  if (options.scrollDistance) {
-    await smoothScrollBy(page, options.scrollDistance, options.scrollDurationMs ?? 6000);
-  }
-
-  if (options.finalPauseMs) {
-    await wait(page, options.finalPauseMs);
-  }
 }
 
 async function convertToMp4() {
@@ -200,57 +177,31 @@ async function main() {
 
   await page.goto(siteUrl, { waitUntil: "domcontentloaded" });
   await waitForStableLoad(page);
-  await wait(page, 5000);
+  await wait(page, 3500);
 
-  await smoothScrollToSelector(page, "text=How it works", 9000, 0.22);
-  await wait(page, 5000);
-
-  await smoothScrollToSelector(page, "text=Live Proof", 7000, 0.58);
-  await wait(page, 5000);
-
-  await visitProofPage(page, escrowTxUrl, {
-    initialPauseMs: 4000,
-    scrollDistance: 2200,
-    scrollDurationMs: 7000,
-    finalPauseMs: 2500,
-  });
-
-  await page.goto(siteUrl, { waitUntil: "domcontentloaded" });
-  await waitForStableLoad(page);
-  await smoothScrollToSelector(page, "text=Live Proof", 3500, 0.58);
-  await wait(page, 2000);
-
-  await visitProofPage(page, statusTxUrl, {
-    initialPauseMs: 3500,
-    scrollDistance: 1200,
-    scrollDurationMs: 4500,
-    finalPauseMs: 1500,
-  });
-
-  await page.goto(siteUrl, { waitUntil: "domcontentloaded" });
-  await waitForStableLoad(page);
-  await smoothScrollToSelector(page, "text=Live Proof", 3000, 0.58);
-  await wait(page, 1500);
-
-  await visitProofPage(page, arkhaiTxUrl, {
-    initialPauseMs: 3500,
-    scrollDistance: 1600,
-    scrollDurationMs: 5000,
-    finalPauseMs: 1500,
-  });
-
-  await page.goto(siteUrl, { waitUntil: "domcontentloaded" });
-  await waitForStableLoad(page);
-  await smoothScrollToSelector(page, "text=Canonical settlement", 7500, 0.72);
-  await wait(page, 5000);
-
-  await smoothScrollToSelector(page, "text=Canonical dispute", 5000, 0.84);
+  await smoothScrollToSelector(page, "text=How it works", 7000, 0.22);
   await wait(page, 3000);
 
-  await smoothScrollBy(page, 2600, 12000);
-  await wait(page, 5000);
-  await scrollToTop(page, 2500);
-  await wait(page, 1500);
+  await smoothScrollToSelector(page, "text=Settlement flow", 6500, 0.38);
+  await wait(page, 4000);
+
+  await smoothScrollBy(page, 1400, 4500);
+  await wait(page, 2500);
+
+  await smoothScrollToSelector(page, "text=Live Proof", 6500, 0.58);
+  await wait(page, 4000);
+
+  await smoothScrollBy(page, 1600, 5000);
+  await wait(page, 2500);
+
+  await smoothScrollToSelector(page, "text=Canonical settlement", 6500, 0.74);
+  await wait(page, 4500);
+
+  await smoothScrollToSelector(page, "text=Canonical dispute", 5500, 0.87);
+  await wait(page, 4500);
+
+  await smoothScrollBy(page, 1800, 5500);
+  await wait(page, 4500);
 
   await page.close();
   const recordedPath = await video.path();
@@ -259,7 +210,7 @@ async function main() {
   await browser.close();
 
   await convertToMp4();
-  const normalizedDurationSeconds = await normalizeDurationIfNeeded(finalVideoPath, 120, 112);
+  const normalizedDurationSeconds = await normalizeDurationIfNeeded(finalVideoPath, 80, 68);
   await copyFile(finalVideoPath, assetVideoPath);
 
   const [fileStats, durationSeconds] = await Promise.all([
