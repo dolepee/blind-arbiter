@@ -34,7 +34,7 @@ async function updateDraft(projectUUID, payload, apiKey) {
 
   try {
     const response = await fetch(url, {
-      method: "PUT",
+      method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
@@ -57,7 +57,7 @@ async function updateDraft(projectUUID, payload, apiKey) {
     const { stdout } = await execFileAsync("curl", [
       "-sS",
       "-X",
-      "PUT",
+      "POST",
       url,
       "-H",
       `Authorization: Bearer ${apiKey}`,
