@@ -92,6 +92,14 @@ export function Workbench({ initialData }: WorkbenchProps) {
   const readOnlyMode = data.readOnlyMode === true;
   const proof = data.proof;
   const latestAgentEvent = [...data.agentLog].sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt))[0] ?? null;
+  const latestProofActivity = [
+    proof?.sepoliaEscrowSmoke?.completedAt || null,
+    proof?.anchoredReceipts[0]?.createdAt || null,
+    proof?.arkhaiLive?.generatedAt || null,
+    latestAgentEvent?.createdAt || null,
+  ]
+    .filter((value): value is string => Boolean(value))
+    .sort((left, right) => Date.parse(right) - Date.parse(left))[0] ?? null;
   const canonicalCase = data.cases.find((item) => item.status === "released") ?? data.cases[0];
   const latestVerdictReceipt = proof?.anchoredReceipts.find((receipt) => receipt.action === "verdict_posted");
   const latestDisputeReceipt = proof?.anchoredReceipts.find((receipt) => receipt.action === "disputed");
@@ -126,8 +134,8 @@ export function Workbench({ initialData }: WorkbenchProps) {
     },
     {
       label: "Agent activity",
-      detail: latestAgentEvent ? new Date(latestAgentEvent.createdAt).toLocaleString() : "no recent events",
-      tone: latestAgentEvent ? "live" : "muted",
+      detail: latestProofActivity ? new Date(latestProofActivity).toLocaleString() : "no recent events",
+      tone: latestProofActivity ? "live" : "muted",
     },
   ] as const;
   const flowSteps = [
