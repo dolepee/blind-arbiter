@@ -13,7 +13,9 @@
     "run:sepolia:arkhai": "node scripts/run-sepolia-arkhai-live.mjs",
     "run:sepolia:arkhai:oracle": "node scripts/run-sepolia-arkhai-oracle.mjs",
     "worker:publish:image": "bash scripts/publish-worker-image.sh",
-    "worker:deploy:ecloud": "bash scripts/deploy-ecloud-worker.sh"
+    "worker:deploy:ecloud": "bash scripts/deploy-ecloud-worker.sh",
+    "submission:blind-arbiter:build": "node scripts/build-blind-arbiter-submission.mjs",
+    "submission:blind-arbiter:create": "node scripts/create-blind-arbiter-synthesis-draft.mjs"
   },
   "dependencies": {
     "next": "^15.3.0",

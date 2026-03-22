@@ -1,0 +1,45 @@
+{
+  "teamUUID": "3bb662129ec540f6acbdf8b949c4a7fc",
+  "name": "BlindArbiter",
+  "description": "BlindArbiter is a confidential milestone escrow arbiter for private deliverables.\n\nA buyer escrows funds against a natural-language acceptance rubric. A seller submits sealed evidence that does not need to be revealed publicly or handed over to the counterparty in advance. BlindArbiter reviews the sealed submission, emits a redacted verdict, and then releases the escrow or opens a dispute with verifiable onchain receipts.\n\nThe current demo is backed by real proof, not mocks:\n- a live Ethereum Sepolia escrow contract and full settlement lifecycle\n- a live Arkhai / Alkahest natural-language agreement lifecycle on Sepolia\n- anchored receipt publication on Status Sepolia\n- a public proof site at `https://blind-arbiter.vercel.app`",
+  "problemStatement": "Teams and agents increasingly exchange work that cannot be disclosed before settlement: security audits, private patches, diligence memos, unreleased designs, sensitive datasets, or internal reports. Existing escrow flows force a bad choice. Either the seller reveals the work before payment, or both parties fall back to a trusted human arbiter with weak transparency and no machine-verifiable trail.\n\nThis breaks down especially fast for agent-native work. Agents can coordinate payments and execution, but there is still no clean way to settle a private deliverable with public consequences. BlindArbiter solves that gap by keeping the work sealed while producing a verifiable settlement trail: escrow creation, verdict posting, dispute or release, and receipt anchoring all happen in public, while the underlying deliverable stays private.",
+  "repoURL": "https://github.com/dolepee/blind-arbiter",
+  "trackUUIDs": [
+    "fdb76d08812b43f6a5f454744b66f590",
+    "877cd61516a14ad9a199bf48defec1c1",
+    "88e91d848daf4d1bb0d40dec0074f59e",
+    "d6c88674390b4150a9ead015443a1375"
+  ],
+  "conversationLog": "# BlindArbiter Human-Agent Collaboration Log\n\n## March 19, 2026\n\n- The human rejected incremental reuse of existing hackathon ideas and asked for an original build with real win potential.\n- The agent reviewed the active Synthesis tracks and recommended a confidential milestone escrow product instead of another treasury, trading, or generic x402 demo.\n- The core thesis was agreed: private deliverables should be settleable without exposing the underlying work.\n- The project concept was named `BlindArbiter`.\n\n## March 19 to March 20, 2026\n\n- The agent scaffolded a fresh BlindArbiter repo and built the first MVP:\n  funded cases, seller acceptance, sealed deliverable submission, redacted verdict generation, release or dispute state transitions, and public proof-oriented UI.\n- The agent added a Solidity escrow primitive and a Status receipt registry contract.\n- The human approved continuing one step at a time rather than broadening scope.\n\n## March 20, 2026\n\n- The agent wired real Status receipt anchoring and verified live Status Sepolia transactions for verdict, dispute, and release receipts.\n- The agent attempted Self Agent ID integration.\n- The human clarified that passport-based Self registration was blocked, so Self was dropped from the active target list.\n\n## March 21, 2026\n\n- The human funded the operator wallet on Ethereum Sepolia.\n- The agent deployed `BlindArbiterEscrow` to Ethereum Sepolia and executed a full live escrow smoke lifecycle for the canonical case.\n- The agent then integrated Arkhai / Alkahest and executed a live Sepolia natural-language agreement lifecycle from create to collection.\n- The agent attempted a real EigenCloud deployment path for the confidential worker.\n- Billing activation, image build, image push, and onchain deploy succeeded, but live Sepolia provisioning still failed before an instance was assigned.\n- To verify the blocker was not app-specific, the agent also deployed a stock nginx probe image, which failed the same way.\n- Based on that evidence, the submission scope was narrowed to:\n  live onchain settlement proof plus a local confidential worker, without claiming a live EigenCloud runtime.\n\n## March 21 to March 22, 2026\n\n- The agent packaged the live proof into a public Vercel deployment.\n- The first Vercel alias returned `404` because the project had been created with the wrong framework preset.\n- The agent corrected the Vercel project configuration, redeployed, and verified the public alias from the VPS.\n- The human then rejected the first public presentation as dry and unclear.\n- The agent rewrote the public homepage to lead with:\n  problem, mechanism, and proof, instead of an operator dashboard.\n\n## March 22, 2026\n\n- The human decided to package `BlindArbiter` first before moving on to `KEJI`.\n- The agent pulled the live Synthesis catalog, extracted the current track UUIDs, verified the team had no existing projects, and prepared the final submission bundle.\n\n## Key Product Decisions\n\n- Do not claim EigenCompute as a live deployment while provisioning is blocked.\n- Do not claim ERC-8004 or Self-based identity flows until they are real.\n- Lead with what is already verifiable:\n  Ethereum Sepolia escrow, Arkhai lifecycle, Status receipts, public proof site, and the sealed-deliverable settlement primitive itself.",
+  "submissionMetadata": {
+    "agentFramework": "other",
+    "agentFrameworkOther": "custom Next.js + viem + Solidity agent workflow",
+    "agentHarness": "codex-cli",
+    "model": "gpt-5",
+    "skills": [
+      "web-search"
+    ],
+    "tools": [
+      "Next.js",
+      "viem",
+      "Solidity",
+      "Vercel",
+      "Arkhai Alkahest",
+      "Status Network"
+    ],
+    "helpfulResources": [
+      "https://synthesis.devfolio.co/submission/skill.md",
+      "https://synthesis.devfolio.co/catalog?page=1&limit=100",
+      "https://raw.githubusercontent.com/arkhai-io/natural-language-agreements/main/README.md"
+    ],
+    "helpfulSkills": [
+      {
+        "name": "web-search",
+        "reason": "Confirmed the live Synthesis submission requirements, current track UUIDs, and official Arkhai integration surface instead of relying on stale cached assumptions."
+      }
+    ],
+    "intention": "continuing",
+    "intentionNotes": "Continue from the live proof baseline: recover hosted confidential compute, wire real identity gating, and extend the sealed-settlement primitive beyond the hackathon demo."
+  },
+  "deployedURL": "https://blind-arbiter.vercel.app"
+}
