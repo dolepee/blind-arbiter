@@ -338,66 +338,75 @@
       "chainId": 11155111,
       "contractAddress": "0x89cf6d586902b8750e6d6e5158c51e838cae7aa0",
       "operator": "0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2",
-      "caseId": "3",
-      "amountEth": "0.001",
+      "roles": {
+        "buyer": "0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2",
+        "seller": "0x69449340611aE2D705E5CF6f1109E210c4f7b2d3",
+        "arbiter": "0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2",
+        "sellerFundingTxHash": null,
+        "sellerFundingExplorerUrl": null,
+        "sellerBalanceEth": "0.0012",
+        "distinctActors": true
+      },
+      "caseId": "5",
+      "amountEth": "0.0002",
       "hashes": {
-        "specHash": "0x53bc983a0abed43e9f47423e5db7deddaa5663a39c4cffa95b88a3da6cb0a047",
-        "deliverableHash": "0x6c5c15eaf55eede980d77589fab2d69c664967c487809e639ef471cf6f9d7fd0",
-        "verdictHash": "0x2c3ea89412f89975136188f0f13531011b206bf4261c415a2bc93334594abb03"
+        "specHash": "0x4fd5f1d7b1d0c962e5657cc82fb63d82446c30b2d4c6970a4a649491b7705221",
+        "deliverableHash": "0x4e7b22123435ff77820325d50f38af2868a899dbc43fc2c2aad64516f12f6d44",
+        "verdictHash": "0xc74706a855fc7a3564b7b7c366f38ec9de9ae546687b3df704eef2ede199705d"
       },
       "transactions": [
         {
           "label": "create_case",
-          "txHash": "0xb1ed8b1c711da9ed4bccd02c7e47fa50ffff49abdfddc678274d20a7162cbb4a",
-          "explorerUrl": "https://sepolia.etherscan.io/tx/0xb1ed8b1c711da9ed4bccd02c7e47fa50ffff49abdfddc678274d20a7162cbb4a",
-          "blockNumber": "10491195",
+          "txHash": "0x8456115d3cc1f69063abaee385fc6837c804997aecfeb5c8f3e991fdd27b4f4a",
+          "explorerUrl": "https://sepolia.etherscan.io/tx/0x8456115d3cc1f69063abaee385fc6837c804997aecfeb5c8f3e991fdd27b4f4a",
+          "blockNumber": "10499162",
           "gasUsed": "168272",
           "status": "success"
         },
         {
           "label": "accept_case",
-          "txHash": "0xea8d436faf954bf7e30ec87a7f8b92eadc2416f8185bf97cff87ba093946473e",
-          "explorerUrl": "https://sepolia.etherscan.io/tx/0xea8d436faf954bf7e30ec87a7f8b92eadc2416f8185bf97cff87ba093946473e",
-          "blockNumber": "10491196",
+          "txHash": "0x16eed5986f615be527673f34cbfa8ad60d0a251a4c82c882d87a5b29574452ed",
+          "explorerUrl": "https://sepolia.etherscan.io/tx/0x16eed5986f615be527673f34cbfa8ad60d0a251a4c82c882d87a5b29574452ed",
+          "blockNumber": "10499163",
           "gasUsed": "33039",
           "status": "success"
         },
         {
           "label": "submit_deliverable",
-          "txHash": "0x70f561eda4fda0c1150132847ea6c8f009b479928e632fa552eb832015f7f322",
-          "explorerUrl": "https://sepolia.etherscan.io/tx/0x70f561eda4fda0c1150132847ea6c8f009b479928e632fa552eb832015f7f322",
-          "blockNumber": "10491197",
+          "txHash": "0xd9639a622d3583a8755c2743409f100e8582853055b88af12fc034d0f835cfd6",
+          "explorerUrl": "https://sepolia.etherscan.io/tx/0xd9639a622d3583a8755c2743409f100e8582853055b88af12fc034d0f835cfd6",
+          "blockNumber": "10499164",
           "gasUsed": "55288",
           "status": "success"
         },
         {
           "label": "post_verdict",
-          "txHash": "0x2904cb0d4aca0f89dce9cbae37e9c727093af9570e97583fcf2210ac13e691e8",
-          "explorerUrl": "https://sepolia.etherscan.io/tx/0x2904cb0d4aca0f89dce9cbae37e9c727093af9570e97583fcf2210ac13e691e8",
-          "blockNumber": "10491198",
+          "txHash": "0xc96cbd63a848d5dd365929e50008bedc0832c07753786d2e91794067a84ce84a",
+          "explorerUrl": "https://sepolia.etherscan.io/tx/0xc96cbd63a848d5dd365929e50008bedc0832c07753786d2e91794067a84ce84a",
+          "blockNumber": "10499165",
           "gasUsed": "55931",
           "status": "success"
         },
         {
           "label": "release",
-          "txHash": "0xebacea493b071482cd9d5859cec7c07bc765c0b4ea3561554597b17c96fce729",
-          "explorerUrl": "https://sepolia.etherscan.io/tx/0xebacea493b071482cd9d5859cec7c07bc765c0b4ea3561554597b17c96fce729",
-          "blockNumber": "10491199",
-          "gasUsed": "40300",
+          "txHash": "0x19dc02d72467289a948eeb116edb844e0ae5d31be57a96cf9fa69e9eb4605bc6",
+          "explorerUrl": "https://sepolia.etherscan.io/tx/0x19dc02d72467289a948eeb116edb844e0ae5d31be57a96cf9fa69e9eb4605bc6",
+          "blockNumber": "10499166",
+          "gasUsed": "42800",
           "status": "success"
         }
       ],
-      "completedAt": "2026-03-21T13:54:25.958Z",
-      "finalCase": [
-        "0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2",
-        "0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2",
-        "0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2",
-        "0",
-        "0x53bc983a0abed43e9f47423e5db7deddaa5663a39c4cffa95b88a3da6cb0a047",
-        "0x6c5c15eaf55eede980d77589fab2d69c664967c487809e639ef471cf6f9d7fd0",
-        "0x2c3ea89412f89975136188f0f13531011b206bf4261c415a2bc93334594abb03",
-        7
-      ]
+      "completedAt": "2026-03-22T17:19:04.949Z",
+      "finalCase": {
+        "buyer": "0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2",
+        "seller": "0x69449340611aE2D705E5CF6f1109E210c4f7b2d3",
+        "arbiter": "0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2",
+        "amountWei": "0",
+        "specHash": "0x4fd5f1d7b1d0c962e5657cc82fb63d82446c30b2d4c6970a4a649491b7705221",
+        "deliverableHash": "0x4e7b22123435ff77820325d50f38af2868a899dbc43fc2c2aad64516f12f6d44",
+        "verdictHash": "0xc74706a855fc7a3564b7b7c366f38ec9de9ae546687b3df704eef2ede199705d",
+        "status": 7
+      }
     },
     "arkhaiLive": {
       "generatedAt": "2026-03-21T21:57:57Z",
@@ -504,7 +513,7 @@
     "summary": {
       "statusReceiptCount": 4,
       "sepoliaTxCount": 5,
-      "canonicalCaseId": "3",
+      "canonicalCaseId": "5",
       "arkhaiTxCount": 6
     }
   }

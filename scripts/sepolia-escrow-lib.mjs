@@ -12,9 +12,10 @@ import {
   http as viemHttp,
   keccak256,
   parseEther,
+  formatEther,
   stringToHex,
 } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
+import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -22,9 +23,12 @@ const RUNTIME_DIR = path.join(ROOT, "runtime");
 const CONTRACT_FILE = path.join(ROOT, "contracts", "BlindArbiterEscrow.sol");
 const DEPLOYMENT_FILE = path.join(RUNTIME_DIR, "sepolia-escrow-deployment.json");
 const SMOKE_FILE = path.join(RUNTIME_DIR, "sepolia-escrow-smoke.json");
+const COUNTERPARTY_FILE = path.join(RUNTIME_DIR, "sepolia-counterparty-wallet.json");
 const DEFAULT_RPC_URL = "https://ethereum-sepolia-rpc.publicnode.com";
 const DEFAULT_EXPLORER_BASE_URL = "https://sepolia.etherscan.io";
 const DEFAULT_CHAIN_ID = 11155111;
+const DEFAULT_COUNTERPARTY_BALANCE_ETH = "0.0012";
+const DEFAULT_COUNTERPARTY_MIN_BALANCE_ETH = "0.0008";
 
 let compiledContractPromise = null;
 
@@ -44,6 +48,8 @@ export function getSepoliaEscrowConfig() {
     privateKey: privateKeyValue ? normalizePrivateKey(privateKeyValue) : null,
     configuredEscrowAddress: process.env.SEPOLIA_ESCROW_ADDRESS || null,
     smokeTestValueEth: process.env.SEPOLIA_SMOKE_TEST_VALUE_ETH || "0.001",
+    counterpartyFundingEth: process.env.SEPOLIA_COUNTERPARTY_FUNDING_ETH || DEFAULT_COUNTERPARTY_BALANCE_ETH,
+    counterpartyMinBalanceEth: process.env.SEPOLIA_COUNTERPARTY_MIN_BALANCE_ETH || DEFAULT_COUNTERPARTY_MIN_BALANCE_ETH,
   };
 }
 
@@ -130,6 +136,16 @@ export async function runSepoliaEscrowSmokeTest() {
     chain,
     transport: buildRpcTransport(config.rpcUrl),
   });
+  const counterparty = await ensureCounterpartyAccount({
+    config,
+    publicClient,
+    walletClient,
+  });
+  const counterpartyWalletClient = createWalletClient({
+    account: counterparty.account,
+    chain,
+    transport: buildRpcTransport(config.rpcUrl),
+  });
 
   const contractAddress = deployment.contractAddress;
   const caseId = await publicClient.readContract({
@@ -147,6 +163,17 @@ export async function runSepoliaEscrowSmokeTest() {
     chainId: config.chainId,
     contractAddress,
     operator: account.address,
+    roles: {
+      buyer: account.address,
+      seller: counterparty.account.address,
+      arbiter: account.address,
+      sellerFundingTxHash: counterparty.fundingTxHash || null,
+      sellerFundingExplorerUrl: counterparty.fundingTxHash
+        ? buildExplorerUrl(config.explorerBaseUrl, counterparty.fundingTxHash)
+        : null,
+      sellerBalanceEth: counterparty.balanceEth,
+      distinctActors: account.address.toLowerCase() !== counterparty.account.address.toLowerCase(),
+    },
     caseId: caseId.toString(),
     amountEth: config.smokeTestValueEth,
     hashes: {
@@ -164,13 +191,13 @@ export async function runSepoliaEscrowSmokeTest() {
     address: contractAddress,
     abi: contract.abi,
     functionName: "createCase",
-    args: [account.address, account.address, specHash],
+    args: [counterparty.account.address, account.address, specHash],
     value: amountWei,
   });
   transactions.push(await finalizeTransaction(publicClient, config.explorerBaseUrl, "create_case", createTx));
   await persistSmokeReport(report);
 
-  const acceptTx = await walletClient.writeContract({
+  const acceptTx = await counterpartyWalletClient.writeContract({
     address: contractAddress,
     abi: contract.abi,
     functionName: "acceptCase",
@@ -179,7 +206,7 @@ export async function runSepoliaEscrowSmokeTest() {
   transactions.push(await finalizeTransaction(publicClient, config.explorerBaseUrl, "accept_case", acceptTx));
   await persistSmokeReport(report);
 
-  const submitTx = await walletClient.writeContract({
+  const submitTx = await counterpartyWalletClient.writeContract({
     address: contractAddress,
     abi: contract.abi,
     functionName: "submitDeliverable",
@@ -227,6 +254,57 @@ export async function runSepoliaEscrowSmokeTest() {
   await persistSmokeReport(report);
 
   return report;
+}
+
+async function ensureCounterpartyAccount({
+  config,
+  publicClient,
+  walletClient,
+}) {
+  const runtimeWallet = await loadCounterpartyWallet();
+  const privateKey = runtimeWallet?.privateKey || generatePrivateKey();
+  const account = privateKeyToAccount(privateKey);
+  const minBalanceWei = parseEther(config.counterpartyMinBalanceEth);
+  const targetBalanceWei = parseEther(config.counterpartyFundingEth);
+  const currentBalance = await publicClient.getBalance({ address: account.address });
+  let fundingTxHash = null;
+
+  if (currentBalance < minBalanceWei) {
+    fundingTxHash = await walletClient.sendTransaction({
+      to: account.address,
+      value: currentBalance >= targetBalanceWei ? targetBalanceWei : targetBalanceWei - currentBalance,
+    });
+    await publicClient.waitForTransactionReceipt({ hash: fundingTxHash });
+  }
+
+  const refreshedBalance = await publicClient.getBalance({ address: account.address });
+  const payload = {
+    label: runtimeWallet?.label || "BlindArbiter Sepolia seller",
+    address: account.address,
+    privateKey,
+    createdAt: runtimeWallet?.createdAt || new Date().toISOString(),
+    lastUsedAt: new Date().toISOString(),
+  };
+  await writeFile(COUNTERPARTY_FILE, JSON.stringify(payload, null, 2));
+
+  return {
+    account,
+    fundingTxHash,
+    balanceEth: formatEther(refreshedBalance),
+  };
+}
+
+async function loadCounterpartyWallet() {
+  try {
+    const raw = await readFile(COUNTERPARTY_FILE, "utf8");
+    const parsed = JSON.parse(raw);
+    if (!parsed?.privateKey) {
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
 }
 
 async function compileEscrowContract() {

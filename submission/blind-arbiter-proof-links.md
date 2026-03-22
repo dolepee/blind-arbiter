@@ -8,17 +8,20 @@
 - Escrow contract: `0x89cf6d586902b8750e6d6e5158c51e838cae7aa0`
 - Deploy tx:
   `https://sepolia.etherscan.io/tx/0x9fc631c9e5a5a5cf21c2f41920b8ab78531b37eb1c001a6c86ba0a89003c92eb`
-- Canonical lifecycle: `caseId 3`
+- Canonical lifecycle: `caseId 5`
+- Distinct buyer / seller wallets:
+  `0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2`
+  `0x69449340611aE2D705E5CF6f1109E210c4f7b2d3`
 - Create case:
-  `https://sepolia.etherscan.io/tx/0xb1ed8b1c711da9ed4bccd02c7e47fa50ffff49abdfddc678274d20a7162cbb4a`
+  `https://sepolia.etherscan.io/tx/0x8456115d3cc1f69063abaee385fc6837c804997aecfeb5c8f3e991fdd27b4f4a`
 - Accept case:
-  `https://sepolia.etherscan.io/tx/0xea8d436faf954bf7e30ec87a7f8b92eadc2416f8185bf97cff87ba093946473e`
+  `https://sepolia.etherscan.io/tx/0x16eed5986f615be527673f34cbfa8ad60d0a251a4c82c882d87a5b29574452ed`
 - Submit deliverable:
-  `https://sepolia.etherscan.io/tx/0x70f561eda4fda0c1150132847ea6c8f009b479928e632fa552eb832015f7f322`
+  `https://sepolia.etherscan.io/tx/0xd9639a622d3583a8755c2743409f100e8582853055b88af12fc034d0f835cfd6`
 - Post verdict:
-  `https://sepolia.etherscan.io/tx/0x2904cb0d4aca0f89dce9cbae37e9c727093af9570e97583fcf2210ac13e691e8`
+  `https://sepolia.etherscan.io/tx/0xc96cbd63a848d5dd365929e50008bedc0832c07753786d2e91794067a84ce84a`
 - Release escrow:
-  `https://sepolia.etherscan.io/tx/0xebacea493b071482cd9d5859cec7c07bc765c0b4ea3561554597b17c96fce729`
+  `https://sepolia.etherscan.io/tx/0x19dc02d72467289a948eeb116edb844e0ae5d31be57a96cf9fa69e9eb4605bc6`
 
 ## Status Sepolia Receipts
 - Receipt registry: `0x6d67cf8ba5857425bed0d2b214e0ce2814f7db07`

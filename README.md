@@ -40,13 +40,16 @@ BlindArbiter already has real proof on multiple surfaces.
 - Deploy tx: `0x9fc631c9e5a5a5cf21c2f41920b8ab78531b37eb1c001a6c86ba0a89003c92eb`
 - Operator wallet: `0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2`
 
-Canonical live lifecycle: `caseId 3`
+Canonical live lifecycle: `caseId 5`
 
-- Create case: `0xb1ed8b1c711da9ed4bccd02c7e47fa50ffff49abdfddc678274d20a7162cbb4a`
-- Accept case: `0xea8d436faf954bf7e30ec87a7f8b92eadc2416f8185bf97cff87ba093946473e`
-- Submit deliverable: `0x70f561eda4fda0c1150132847ea6c8f009b479928e632fa552eb832015f7f322`
-- Post verdict: `0x2904cb0d4aca0f89dce9cbae37e9c727093af9570e97583fcf2210ac13e691e8`
-- Release escrow: `0xebacea493b071482cd9d5859cec7c07bc765c0b4ea3561554597b17c96fce729`
+- Buyer wallet: `0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2`
+- Seller wallet: `0x69449340611aE2D705E5CF6f1109E210c4f7b2d3`
+- Arbiter wallet: `0x8942F989343e4Ce8e4c8c0D7C648a6953ff3A5A2`
+- Create case: `0x8456115d3cc1f69063abaee385fc6837c804997aecfeb5c8f3e991fdd27b4f4a`
+- Accept case: `0x16eed5986f615be527673f34cbfa8ad60d0a251a4c82c882d87a5b29574452ed`
+- Submit deliverable: `0xd9639a622d3583a8755c2743409f100e8582853055b88af12fc034d0f835cfd6`
+- Post verdict: `0xc96cbd63a848d5dd365929e50008bedc0832c07753786d2e91794067a84ce84a`
+- Release escrow: `0x19dc02d72467289a948eeb116edb844e0ae5d31be57a96cf9fa69e9eb4605bc6`
 
 ### Status Sepolia
 

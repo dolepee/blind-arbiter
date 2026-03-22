@@ -91,6 +91,7 @@ export function Workbench({ initialData }: WorkbenchProps) {
   };
   const readOnlyMode = data.readOnlyMode === true;
   const proof = data.proof;
+  const latestAgentEvent = [...data.agentLog].sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt))[0] ?? null;
   const canonicalCase = data.cases.find((item) => item.status === "released") ?? data.cases[0];
   const latestVerdictReceipt = proof?.anchoredReceipts.find((receipt) => receipt.action === "verdict_posted");
   const latestDisputeReceipt = proof?.anchoredReceipts.find((receipt) => receipt.action === "disputed");
@@ -122,6 +123,11 @@ export function Workbench({ initialData }: WorkbenchProps) {
       label: "Status receipts",
       detail: proof?.anchoredReceipts.length ? `${proof.anchoredReceipts.length} anchored` : "pending",
       tone: proof?.anchoredReceipts.length ? "live" : "muted",
+    },
+    {
+      label: "Agent activity",
+      detail: latestAgentEvent ? new Date(latestAgentEvent.createdAt).toLocaleString() : "no recent events",
+      tone: latestAgentEvent ? "live" : "muted",
     },
   ] as const;
   const flowSteps = [
@@ -250,6 +256,13 @@ export function Workbench({ initialData }: WorkbenchProps) {
             <div>
               <strong>Proof</strong>
               <p>Escrow settlement is live on Ethereum Sepolia, Arkhai is settled on Sepolia, and receipts are anchored on Status.</p>
+            </div>
+            <div>
+              <strong>Agent runtime</strong>
+              <p>
+                The blind review worker is a self-hosted OpenClaw agent running in a secure Ubuntu operator environment. Sensitive deliverables stay
+                inside that runtime and are evaluated deterministically without being sent to external APIs.
+              </p>
             </div>
           </div>
         </div>
@@ -709,6 +722,32 @@ function ProofPanel({ proof }: { proof?: LiveProofBundle }) {
                   <span className="label">Completed at</span>
                   <p>{proof.sepoliaEscrowSmoke.completedAt ? new Date(proof.sepoliaEscrowSmoke.completedAt).toLocaleString() : "in progress"}</p>
                 </div>
+                <div>
+                  <span className="label">Buyer</span>
+                  <p className="mono">{proof.sepoliaEscrowSmoke.finalCase?.buyer || proof.sepoliaEscrowSmoke.roles?.buyer || "n/a"}</p>
+                </div>
+                <div>
+                  <span className="label">Seller</span>
+                  <p className="mono">{proof.sepoliaEscrowSmoke.finalCase?.seller || proof.sepoliaEscrowSmoke.roles?.seller || "n/a"}</p>
+                </div>
+                <div>
+                  <span className="label">Arbiter</span>
+                  <p className="mono">{proof.sepoliaEscrowSmoke.finalCase?.arbiter || proof.sepoliaEscrowSmoke.roles?.arbiter || "n/a"}</p>
+                </div>
+                <div>
+                  <span className="label">Counterparty separation</span>
+                  <p>{proof.sepoliaEscrowSmoke.roles?.distinctActors ? "buyer and seller are distinct wallets" : "single-wallet self-play"}</p>
+                </div>
+                {proof.sepoliaEscrowSmoke.roles?.sellerFundingExplorerUrl ? (
+                  <div>
+                    <span className="label">Seller funding tx</span>
+                    <p>
+                      <a href={proof.sepoliaEscrowSmoke.roles.sellerFundingExplorerUrl} target="_blank" rel="noreferrer">
+                        {shortHash(proof.sepoliaEscrowSmoke.roles.sellerFundingTxHash || "")}
+                      </a>
+                    </p>
+                  </div>
+                ) : null}
               </div>
               <div className="txList">
                 {proof.sepoliaEscrowSmoke.transactions.map((transaction) => (

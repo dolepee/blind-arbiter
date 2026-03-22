@@ -173,6 +173,15 @@ export interface SepoliaEscrowSmokeProof {
   chainId: number;
   contractAddress: string;
   operator: string;
+  roles?: {
+    buyer: string;
+    seller: string;
+    arbiter: string;
+    sellerFundingTxHash?: string | null;
+    sellerFundingExplorerUrl?: string | null;
+    sellerBalanceEth?: string | null;
+    distinctActors?: boolean;
+  };
   caseId: string;
   amountEth: string;
   hashes: {

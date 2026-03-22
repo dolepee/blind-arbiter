@@ -93,6 +93,17 @@ function normalizeSepoliaSmoke(raw: Record<string, unknown> | null): SepoliaEscr
     chainId: Number(raw.chainId || 11155111),
     contractAddress: String(raw.contractAddress || ""),
     operator: String(raw.operator || ""),
+    roles: raw.roles && typeof raw.roles === "object"
+      ? {
+          buyer: String((raw.roles as Record<string, unknown>).buyer || ""),
+          seller: String((raw.roles as Record<string, unknown>).seller || ""),
+          arbiter: String((raw.roles as Record<string, unknown>).arbiter || ""),
+          sellerFundingTxHash: ((raw.roles as Record<string, unknown>).sellerFundingTxHash as string | undefined) || null,
+          sellerFundingExplorerUrl: ((raw.roles as Record<string, unknown>).sellerFundingExplorerUrl as string | undefined) || null,
+          sellerBalanceEth: ((raw.roles as Record<string, unknown>).sellerBalanceEth as string | undefined) || null,
+          distinctActors: Boolean((raw.roles as Record<string, unknown>).distinctActors),
+        }
+      : undefined,
     caseId: String(raw.caseId || ""),
     amountEth: String(raw.amountEth || ""),
     hashes: {
