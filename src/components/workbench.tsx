@@ -96,7 +96,11 @@ export function Workbench({ initialData }: WorkbenchProps) {
   const proofSignals = [
     {
       label: "Blind review worker",
-      detail: data.cases.some((item) => item.review?.execution?.strategy === "http_worker") ? "live locally" : "deterministic fallback",
+      detail: data.cases.some((item) => item.review?.execution?.strategy === "http_worker")
+        ? readOnlyMode
+          ? "operator runtime"
+          : "running locally"
+        : "deterministic fallback",
       tone: "local",
     },
     {
