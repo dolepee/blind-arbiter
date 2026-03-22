@@ -1,16 +1,19 @@
 :root {
-  --bg: #f2ece1;
-  --panel: rgba(255, 252, 246, 0.92);
-  --panel-strong: #fffefb;
+  --bg: #efe7d7;
+  --panel: rgba(255, 252, 245, 0.92);
+  --panel-strong: #fffdf7;
   --ink: #181714;
-  --muted: #676157;
-  --line: #d7cebf;
+  --muted: #5b584f;
+  --line: #d1c5b3;
   --accent: #8f2d1e;
   --accent-soft: #f6e7de;
+  --accent-deep: #332319;
   --success: #1f6f43;
   --success-soft: #e6f3eb;
   --danger: #9a3a2c;
   --danger-soft: #f9e8e2;
+  --local: #235b73;
+  --local-soft: #e4f1f6;
   --shadow: 0 20px 60px rgba(47, 36, 21, 0.08);
 }
 
@@ -19,16 +22,16 @@
 }
 
 html {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
 }
 
 body {
   margin: 0;
   color: var(--ink);
   background:
-    radial-gradient(circle at top left, rgba(143, 45, 30, 0.1), transparent 24%),
-    radial-gradient(circle at right center, rgba(33, 93, 115, 0.08), transparent 22%),
-    linear-gradient(180deg, #ece6da 0%, var(--bg) 100%);
+    radial-gradient(circle at top left, rgba(143, 45, 30, 0.12), transparent 24%),
+    radial-gradient(circle at right 15%, rgba(33, 93, 115, 0.12), transparent 22%),
+    linear-gradient(180deg, #e9deca 0%, var(--bg) 100%);
 }
 
 button,
@@ -42,7 +45,7 @@ button {
 }
 
 .pageShell {
-  padding: 36px 24px 72px;
+  padding: 30px 24px 72px;
 }
 
 .workbench {
@@ -53,9 +56,38 @@ button {
 .hero {
   display: grid;
   grid-template-columns: 1.4fr 0.8fr;
-  gap: 24px;
+  gap: 22px;
   align-items: stretch;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
+}
+
+.heroMain,
+.heroProofCard,
+.storyCard {
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.heroMain {
+  position: relative;
+  overflow: hidden;
+  padding: 32px;
+  border-radius: 30px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(255, 247, 236, 0.92)),
+    linear-gradient(180deg, rgba(143, 45, 30, 0.08), transparent);
+}
+
+.heroMain::after {
+  content: "";
+  position: absolute;
+  right: -60px;
+  bottom: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(143, 45, 30, 0.16), rgba(143, 45, 30, 0));
+  pointer-events: none;
 }
 
 .eyebrow {
@@ -68,16 +100,25 @@ button {
 
 .hero h1 {
   margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(3rem, 8vw, 5.4rem);
   line-height: 0.95;
   letter-spacing: -0.04em;
 }
 
 .lede {
-  max-width: 52rem;
+  max-width: 44rem;
   margin: 18px 0 0;
+  font-size: 1.42rem;
+  line-height: 1.2;
+}
+
+.heroBody {
+  max-width: 46rem;
+  margin: 16px 0 0;
   color: var(--muted);
-  font-size: 1.16rem;
+  font-size: 1.05rem;
+  line-height: 1.65;
 }
 
 .heroCard,
@@ -90,11 +131,51 @@ button {
 }
 
 .heroCard {
+  padding: 22px;
+  border-radius: 30px;
+}
+
+.heroProofCard {
+  color: #f6eee5;
+  background:
+    linear-gradient(180deg, rgba(24, 23, 20, 0.96), rgba(44, 30, 22, 0.94)),
+    linear-gradient(135deg, rgba(143, 45, 30, 0.2), transparent);
+}
+
+.heroProofCard .eyebrow,
+.heroProofCard .metricLabel,
+.heroProofCard p {
+  color: rgba(246, 238, 229, 0.82);
+}
+
+.heroProofCard .eyebrow {
+  color: #efb9a9;
+}
+
+.heroStats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  padding: 18px;
-  align-content: center;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 12px;
+  margin-top: 18px;
+}
+
+.heroChecklist {
+  display: grid;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.heroChecklist strong {
+  display: block;
+  font-size: 0.88rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #efb9a9;
+}
+
+.heroChecklist p {
+  margin: 4px 0 0;
+  line-height: 1.55;
 }
 
 .metric {
@@ -108,14 +189,14 @@ button {
   font-size: 0.92rem;
 }
 
-.stack {
+.signalRow {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 18px;
+  margin-top: 22px;
 }
 
-.stack span,
+.signalPill,
 .criterionChip {
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.7);
@@ -123,10 +204,81 @@ button {
   font-size: 0.9rem;
 }
 
+.signalPill {
+  display: grid;
+  gap: 2px;
+  min-width: 170px;
+  border-radius: 14px;
+  background: rgba(255, 253, 249, 0.78);
+}
+
+.signalPill strong {
+  font-size: 0.84rem;
+}
+
+.signalPill span {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.signal-live {
+  background: var(--success-soft);
+  border-color: rgba(31, 111, 67, 0.2);
+}
+
+.signal-local {
+  background: var(--local-soft);
+  border-color: rgba(35, 91, 115, 0.18);
+}
+
+.storyGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.storyCard {
+  border-radius: 24px;
+  padding: 20px;
+  background: linear-gradient(180deg, rgba(255, 252, 246, 0.94), rgba(255, 250, 244, 0.78));
+}
+
+.storyCard h2,
+.proofCard h3,
+.panelHeader h2,
+.caseHeader h3 {
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.storyCard h2 {
+  margin: 0 0 10px;
+  font-size: 1.45rem;
+}
+
+.storyCard p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.storyList {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
 .grid {
   display: grid;
   grid-template-columns: minmax(300px, 420px) minmax(0, 1fr);
   gap: 18px;
+}
+
+.publicGrid {
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
 }
 
 .proofPanel {
@@ -224,7 +376,8 @@ button {
 .receiptItem p,
 .criterionResult p,
 .logItem p,
-.submissionBlock p {
+.submissionBlock p,
+.publicNarrative p {
   margin: 6px 0 0;
   color: var(--muted);
 }
@@ -345,6 +498,16 @@ button:disabled {
   margin: 0;
 }
 
+.publicNarrative,
+.credibilityList {
+  display: grid;
+  gap: 12px;
+}
+
+.publicCasePanel .criterionList {
+  margin-top: 16px;
+}
+
 .criteriaBlock {
   display: flex;
   flex-wrap: wrap;
@@ -442,13 +605,14 @@ button:disabled {
 
 @media (max-width: 1024px) {
   .hero,
+  .storyGrid,
   .grid,
   .proofGrid {
     grid-template-columns: 1fr;
   }
 
-  .heroCard {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .heroStats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
@@ -457,6 +621,7 @@ button:disabled {
     padding-inline: 16px;
   }
 
+  .heroMain,
   .heroCard,
   .formRow,
   .detailGrid,
@@ -468,5 +633,9 @@ button:disabled {
   .reviewHeader {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .heroStats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

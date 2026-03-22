@@ -71,6 +71,10 @@ function shortHash(value: string, start = 8, end = 6) {
   return `${value.slice(0, start)}...${value.slice(-end)}`;
 }
 
+function formatConfidence(value: number) {
+  return `${Math.round(value * 100)}%`;
+}
+
 export function Workbench({ initialData }: WorkbenchProps) {
   const [data, setData] = useState(initialData);
   const [createForm, setCreateForm] = useState(initialCreateForm);
@@ -84,16 +88,33 @@ export function Workbench({ initialData }: WorkbenchProps) {
   };
   const readOnlyMode = data.readOnlyMode === true;
   const proof = data.proof;
-  const eigenComputeReadiness = data.cases.some((item) => item.integrations.eigenCompute === "ready")
-    ? "local worker live"
-    : "deterministic local fallback";
-  const statusReadiness = proof?.anchoredReceipts.length
-    ? "anchored receipts live"
-    : data.cases.some((item) => item.integrations.status === "ready")
-      ? "real anchoring ready"
-    : data.cases.some((item) => item.integrations.status === "planned")
-      ? "wallet configured, registry pending"
-      : "receipt drafts ready";
+  const canonicalCase = data.cases.find((item) => item.status === "released") ?? data.cases[0];
+  const proofCount =
+    (proof?.sepoliaEscrowSmoke?.transactions.length ?? 0) +
+    (proof?.arkhaiLive?.transactions.length ?? 0) +
+    (proof?.anchoredReceipts.length ?? 0);
+  const proofSignals = [
+    {
+      label: "Blind review worker",
+      detail: data.cases.some((item) => item.review?.execution?.strategy === "http_worker") ? "live locally" : "deterministic fallback",
+      tone: "local",
+    },
+    {
+      label: "Ethereum Sepolia escrow",
+      detail: proof?.sepoliaEscrowDeployment ? "deployed" : "pending",
+      tone: proof?.sepoliaEscrowDeployment ? "live" : "muted",
+    },
+    {
+      label: "Arkhai lifecycle",
+      detail: proof?.arkhaiLive ? "settled live" : "pending",
+      tone: proof?.arkhaiLive ? "live" : "muted",
+    },
+    {
+      label: "Status receipts",
+      detail: proof?.anchoredReceipts.length ? `${proof.anchoredReceipts.length} anchored` : "pending",
+      tone: proof?.anchoredReceipts.length ? "live" : "muted",
+    },
+  ] as const;
 
   const refreshData = async () => {
     const response = await fetch("/api/cases");
@@ -104,153 +125,295 @@ export function Workbench({ initialData }: WorkbenchProps) {
   return (
     <div className="workbench">
       <section className="hero">
-        <div>
-          <p className="eyebrow">Confidential milestone settlement</p>
+        <div className="heroMain">
+          <p className="eyebrow">Private work. Public settlement.</p>
           <h1>BlindArbiter</h1>
           <p className="lede">
-            Evaluate sealed deliverables, produce a redacted verdict, and drive escrow release or dispute without leaking the work itself.
+            BlindArbiter settles milestone escrow without exposing the deliverable.
           </p>
-        </div>
-        <div className="heroCard">
-          <div>
-            <span className="metric">{data.cases.length}</span>
-            <span className="metricLabel">tracked cases</span>
-          </div>
-          <div>
-            <span className="metric">{counts.reviewable}</span>
-            <span className="metricLabel">ready for review</span>
-          </div>
-          <div>
-            <span className="metric">{counts.released}</span>
-            <span className="metricLabel">released</span>
+          <p className="heroBody">
+            A buyer escrows funds against a natural-language rubric. A seller submits sealed evidence. BlindArbiter produces a redacted verdict,
+            then either releases the escrow or opens a dispute with verifiable onchain receipts.
+          </p>
+          <div className="signalRow">
+            {proofSignals.map((signal) => (
+              <div key={signal.label} className={`signalPill signal-${signal.tone}`}>
+                <strong>{signal.label}</strong>
+                <span>{signal.detail}</span>
+              </div>
+            ))}
           </div>
         </div>
-      </section>
-
-      <section className="stack">
-        <span>EigenCompute: {eigenComputeReadiness}</span>
-        <span>EigenCloud Sepolia: provisioning blocked</span>
-        <span>Self: local stub</span>
-        <span>Status: {statusReadiness}</span>
-        <span>Arkhai: live Sepolia lifecycle complete</span>
+        <div className="heroCard heroProofCard">
+          <p className="eyebrow">What is live</p>
+          <div className="heroStats">
+            <div>
+              <span className="metric">{proof?.summary.sepoliaTxCount ?? 0}</span>
+              <span className="metricLabel">Ethereum Sepolia txs</span>
+            </div>
+            <div>
+              <span className="metric">{proof?.summary.arkhaiTxCount ?? 0}</span>
+              <span className="metricLabel">Arkhai txs</span>
+            </div>
+            <div>
+              <span className="metric">{proof?.summary.statusReceiptCount ?? 0}</span>
+              <span className="metricLabel">Status receipts</span>
+            </div>
+            <div>
+              <span className="metric">{proofCount}</span>
+              <span className="metricLabel">verifiable proof events</span>
+            </div>
+          </div>
+          <div className="heroChecklist">
+            <div>
+              <strong>Problem</strong>
+              <p>Teams need to settle private milestone work without exposing audits, patches, or due diligence files.</p>
+            </div>
+            <div>
+              <strong>Mechanism</strong>
+              <p>BlindArbiter reviews sealed evidence, emits a redacted verdict, and drives release or dispute.</p>
+            </div>
+            <div>
+              <strong>Proof</strong>
+              <p>Escrow settlement is live on Ethereum Sepolia, Arkhai is settled on Sepolia, and receipts are anchored on Status.</p>
+            </div>
+          </div>
+        </div>
       </section>
 
       {readOnlyMode ? <div className="errorBanner">{READ_ONLY_MESSAGE}</div> : null}
       {error ? <div className="errorBanner">{error}</div> : null}
 
+      <section className="storyGrid">
+        <article className="storyCard">
+          <span className="proofEyebrow">Why now</span>
+          <h2>Private deliverables are hard to settle fairly</h2>
+          <p>
+            Smart contract audits, private patches, unreleased designs, diligence packets, and internal datasets often cannot be posted to a public chain
+            or shared widely with a counterparty.
+          </p>
+        </article>
+        <article className="storyCard">
+          <span className="proofEyebrow">How it works</span>
+          <h2>Blind review with public consequences</h2>
+          <ol className="storyList">
+            <li>Buyer funds a milestone escrow against a natural-language acceptance rubric.</li>
+            <li>Seller submits sealed evidence for review without exposing the underlying work.</li>
+            <li>BlindArbiter issues a redacted verdict and settles release or dispute with onchain receipts.</li>
+          </ol>
+        </article>
+        <article className="storyCard">
+          <span className="proofEyebrow">What to verify</span>
+          <h2>The proof is onchain</h2>
+          <ol className="storyList">
+            <li>Ethereum Sepolia shows the escrow contract and the canonical release flow.</li>
+            <li>Arkhai shows a live natural-language agreement lifecycle from creation to collection.</li>
+            <li>Status shows receipt anchoring for verdict and settlement events.</li>
+          </ol>
+        </article>
+      </section>
+
       <ProofPanel proof={proof} />
 
-      <div className="grid">
-        <section className="panel">
-          <div className="panelHeader">
-            <div>
-              <h2>Create milestone</h2>
-              <p>Seed a new escrow case with a rubric the arbiter can score.</p>
-            </div>
-          </div>
-
-          <form
-            className="form"
-            onSubmit={(event) => {
-              event.preventDefault();
-              if (readOnlyMode) {
-                setError(READ_ONLY_MESSAGE);
-                return;
-              }
-              setError(null);
-              startTransition(async () => {
-                try {
-                  const payload = {
-                    ...createForm,
-                    amountUsd: Number(createForm.amountUsd),
-                  };
-                  await postJson("/api/cases", payload);
-                  await refreshData();
-                  setCreateForm(initialCreateForm);
-                } catch (submissionError) {
-                  setError(submissionError instanceof Error ? submissionError.message : "Failed to create case.");
-                }
-              });
-            }}
-          >
-            <label>
-              <span>Title</span>
-              <input value={createForm.title} onChange={(event) => setCreateForm({ ...createForm, title: event.target.value })} />
-            </label>
-            <div className="formRow">
-              <label>
-                <span>Amount (USD)</span>
-                <input value={createForm.amountUsd} onChange={(event) => setCreateForm({ ...createForm, amountUsd: event.target.value })} />
-              </label>
-              <label>
-                <span>Buyer</span>
-                <input value={createForm.buyerName} onChange={(event) => setCreateForm({ ...createForm, buyerName: event.target.value })} />
-              </label>
-            </div>
-            <div className="formRow">
-              <label>
-                <span>Buyer wallet</span>
-                <input value={createForm.buyerWallet} onChange={(event) => setCreateForm({ ...createForm, buyerWallet: event.target.value })} />
-              </label>
-              <label>
-                <span>Buyer Self ID</span>
-                <input value={createForm.buyerSelfId} onChange={(event) => setCreateForm({ ...createForm, buyerSelfId: event.target.value })} />
-              </label>
-            </div>
-            <label>
-              <span>Milestone summary</span>
-              <textarea rows={4} value={createForm.summary} onChange={(event) => setCreateForm({ ...createForm, summary: event.target.value })} />
-            </label>
-            <label>
-              <span>Criteria, one per line</span>
-              <textarea rows={5} value={createForm.criteria} onChange={(event) => setCreateForm({ ...createForm, criteria: event.target.value })} />
-            </label>
-            <button type="submit" disabled={isPending || readOnlyMode}>Create funded case</button>
-          </form>
-        </section>
-
-        <section className="panel">
-          <div className="panelHeader">
-            <div>
-              <h2>Case board</h2>
-              <p>Accept, submit, review, release, or dispute each escrow milestone.</p>
-            </div>
-          </div>
-
-          <div className="caseList">
-            {data.cases.map((caseFile) => (
-              <CaseCard
-                key={caseFile.id}
-                caseFile={caseFile}
-                busy={isPending}
-                readOnlyMode={readOnlyMode}
-                onError={setError}
-                onRefresh={refreshData}
-              />
-            ))}
-          </div>
-        </section>
-      </div>
-
-      <section className="panel logsPanel">
-        <div className="panelHeader">
-          <div>
-            <h2>Agent log</h2>
-            <p>Current runtime log entries written from the local store.</p>
-          </div>
-        </div>
-        <div className="logList">
-          {data.agentLog.slice(0, 8).map((entry) => (
-            <div key={entry.id} className="logItem">
+      {readOnlyMode && canonicalCase ? (
+        <section className="grid publicGrid">
+          <section className="panel publicCasePanel">
+            <div className="panelHeader">
               <div>
-                <strong>{entry.kind.replaceAll("_", " ")}</strong>
-                <p>{entry.message}</p>
+                <h2>Canonical settlement</h2>
+                <p>This is the reference BlindArbiter flow shown in the demo and backed by the live proof above.</p>
               </div>
-              <time>{new Date(entry.createdAt).toLocaleString()}</time>
+              <div className={`statusBadge status-${canonicalCase.status}`}>{formatStatus(canonicalCase.status)}</div>
             </div>
-          ))}
-        </div>
-      </section>
+
+            <div className="detailGrid">
+              <div>
+                <span className="label">Milestone value</span>
+                <p>${canonicalCase.amountUsd}</p>
+              </div>
+              <div>
+                <span className="label">Settlement path</span>
+                <p>{canonicalCase.review?.recommendedAction ?? "pending"}</p>
+              </div>
+              <div>
+                <span className="label">Buyer</span>
+                <p>{canonicalCase.buyer.displayName}</p>
+              </div>
+              <div>
+                <span className="label">Seller</span>
+                <p>{canonicalCase.seller?.displayName ?? "pending"}</p>
+              </div>
+            </div>
+
+            <div className="publicNarrative">
+              <div>
+                <span className="label">Milestone rubric</span>
+                <p>{canonicalCase.milestone.summary}</p>
+              </div>
+              <div>
+                <span className="label">Sealed submission</span>
+                <p>{canonicalCase.submission?.narrative}</p>
+              </div>
+              <div>
+                <span className="label">Redacted verdict</span>
+                <p>{canonicalCase.review?.redactedSummary}</p>
+              </div>
+            </div>
+
+            <div className="criterionList">
+              {(canonicalCase.review?.criteria ?? []).map((criterion) => (
+                <div key={criterion.id} className="criterionResult">
+                  <strong>{criterion.label}</strong>
+                  <span className={`miniVerdict miniVerdict-${criterion.result}`}>{criterion.result}</span>
+                  <p>{criterion.notes}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="panel">
+            <div className="panelHeader">
+              <div>
+                <h2>Why the verdict is credible</h2>
+                <p>The public site cannot show the sealed work itself, so it shows the chain of consequences instead.</p>
+              </div>
+            </div>
+
+            <div className="credibilityList">
+              <div className="receiptItem">
+                <strong>Escrow release happened onchain</strong>
+                <p>The canonical case reached a released state on Ethereum Sepolia after the verdict was posted.</p>
+              </div>
+              <div className="receiptItem">
+                <strong>Status anchored the receipt trail</strong>
+                <p>Verdict and settlement actions are published as receipts instead of exposing the private deliverable.</p>
+              </div>
+              <div className="receiptItem">
+                <strong>Arkhai mirrored the dispute logic</strong>
+                <p>A live natural-language agreement was created, fulfilled, arbitrated, and collected on Sepolia.</p>
+              </div>
+              <div className="receiptItem">
+                <strong>Blind review stayed sealed</strong>
+                <p>The public proof shows hashes, verdicts, and txs while the deliverable remains private.</p>
+              </div>
+            </div>
+          </section>
+        </section>
+      ) : (
+        <>
+          <div className="grid">
+            <section className="panel">
+              <div className="panelHeader">
+                <div>
+                  <h2>Create milestone</h2>
+                  <p>Seed a new escrow case with a rubric the arbiter can score.</p>
+                </div>
+              </div>
+
+              <form
+                className="form"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  if (readOnlyMode) {
+                    setError(READ_ONLY_MESSAGE);
+                    return;
+                  }
+                  setError(null);
+                  startTransition(async () => {
+                    try {
+                      const payload = {
+                        ...createForm,
+                        amountUsd: Number(createForm.amountUsd),
+                      };
+                      await postJson("/api/cases", payload);
+                      await refreshData();
+                      setCreateForm(initialCreateForm);
+                    } catch (submissionError) {
+                      setError(submissionError instanceof Error ? submissionError.message : "Failed to create case.");
+                    }
+                  });
+                }}
+              >
+                <label>
+                  <span>Title</span>
+                  <input value={createForm.title} onChange={(event) => setCreateForm({ ...createForm, title: event.target.value })} />
+                </label>
+                <div className="formRow">
+                  <label>
+                    <span>Amount (USD)</span>
+                    <input value={createForm.amountUsd} onChange={(event) => setCreateForm({ ...createForm, amountUsd: event.target.value })} />
+                  </label>
+                  <label>
+                    <span>Buyer</span>
+                    <input value={createForm.buyerName} onChange={(event) => setCreateForm({ ...createForm, buyerName: event.target.value })} />
+                  </label>
+                </div>
+                <div className="formRow">
+                  <label>
+                    <span>Buyer wallet</span>
+                    <input value={createForm.buyerWallet} onChange={(event) => setCreateForm({ ...createForm, buyerWallet: event.target.value })} />
+                  </label>
+                  <label>
+                    <span>Buyer Self ID</span>
+                    <input value={createForm.buyerSelfId} onChange={(event) => setCreateForm({ ...createForm, buyerSelfId: event.target.value })} />
+                  </label>
+                </div>
+                <label>
+                  <span>Milestone summary</span>
+                  <textarea rows={4} value={createForm.summary} onChange={(event) => setCreateForm({ ...createForm, summary: event.target.value })} />
+                </label>
+                <label>
+                  <span>Criteria, one per line</span>
+                  <textarea rows={5} value={createForm.criteria} onChange={(event) => setCreateForm({ ...createForm, criteria: event.target.value })} />
+                </label>
+                <button type="submit" disabled={isPending || readOnlyMode}>Create funded case</button>
+              </form>
+            </section>
+
+            <section className="panel">
+              <div className="panelHeader">
+                <div>
+                  <h2>Case board</h2>
+                  <p>Accept, submit, review, release, or dispute each escrow milestone.</p>
+                </div>
+              </div>
+
+              <div className="caseList">
+                {data.cases.map((caseFile) => (
+                  <CaseCard
+                    key={caseFile.id}
+                    caseFile={caseFile}
+                    busy={isPending}
+                    readOnlyMode={readOnlyMode}
+                    onError={setError}
+                    onRefresh={refreshData}
+                  />
+                ))}
+              </div>
+            </section>
+          </div>
+
+          <section className="panel logsPanel">
+            <div className="panelHeader">
+              <div>
+                <h2>Agent log</h2>
+                <p>Current runtime log entries written from the local store.</p>
+              </div>
+            </div>
+            <div className="logList">
+              {data.agentLog.slice(0, 8).map((entry) => (
+                <div key={entry.id} className="logItem">
+                  <div>
+                    <strong>{entry.kind.replaceAll("_", " ")}</strong>
+                    <p>{entry.message}</p>
+                  </div>
+                  <time>{new Date(entry.createdAt).toLocaleString()}</time>
+                </div>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
     </div>
   );
 }
